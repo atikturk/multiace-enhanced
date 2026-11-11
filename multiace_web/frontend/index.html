@@ -1108,7 +1108,7 @@
               <code>{{ (
                   t_.channel_state === 'wait_insert' &&
                   t_.filament_at_extruder === true
-                    ? 'Filament yüklü'
+                    ? t('ui.enhanced.filament_loaded')
                     <!-- ENHANCED_HEAD_PRELOADED_LABEL_V2 -->
                     : (
                       t_.channel_state === 'wait_insert' &&
@@ -1118,7 +1118,7 @@
                       !t_.head_source_known &&
                       !t_.load_failed &&
                       (!t_.channel_error || t_.channel_error === 'ok')
-                        ? 'Ön yüklü'
+                        ? t('ui.dashboard.head_preloaded')
                         : channelStateLabel(t_.channel_state)
                     )
                 ) }}</code>
