@@ -19,6 +19,14 @@ The development printer runs **PAXX 2.0.0-paxx12-24-417e639** with a **multiACE 
 - **Persistence and recovery:** hash-aware startup restoration, compatibility checks and a PAXX 2.0 recovery standard.
 - **Field evidence:** prior 11/11 print-start testing and cold-boot persistence checks on the development device.
 
+## MultiACE Enhanced Web — interface preview
+
+The following screenshot shows the live **ACE Pro Gen1 (V1) filament panel** of our Enhanced Web application, including RFID identification, Spoolman-linked spools and U1 toolhead preload status.
+
+![MultiACE Enhanced Web showing ACE Pro Gen1 RFID, Spoolman and toolhead status](docs/screenshots/multiace-enhanced-web-ace-gen1.png)
+
+*Screenshot from the development printer, November 2026. This is the ACE/filament-management section, not the entire Web application.*
+
 ## Source layout
 
 | Directory | Contents |
