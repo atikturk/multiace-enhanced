@@ -75,9 +75,21 @@ Technical documentation, change history, recovery procedures, and installation i
 
 ## Credits
 
-This project builds upon the work of the MultiACE, PAXX, Klipper, and Spoolman communities.
+## Acknowledgements & Special Thanks
 
-MultiACE Enhanced is an independent community enhancement project and is not an official Snapmaker, Anycubic, or MultiACE release.
+MultiACE Enhanced would not have been possible without the dedication, knowledge, and contributions of the developers who helped build the Snapmaker U1 custom firmware and MultiACE ecosystem.
+
+Special thanks to:
+
+- **PAXX** — For the custom firmware development and the foundation that makes advanced customization of the Snapmaker U1 possible.
+- **decay71** — For valuable contributions to the MultiACE ecosystem and its development.
+- **donkie** — For valuable contributions and technical work supporting the SPOOLMAN ecosystem.
+
+Their work, dedication, and willingness to share their knowledge with the community are sincerely appreciated.
+
+**MultiACE Enhanced builds upon the foundations established by these developers, with great respect for their original work.**
+
+Thank you for making further development possible.
 
 ## License
 
