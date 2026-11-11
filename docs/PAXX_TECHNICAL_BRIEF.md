@@ -21,7 +21,7 @@ Share field-tested integration changes and discuss which ones could be upstreame
 
 ## Android RFID companion build (Gen1 ACE)
 
-A separate [Android RFID NFC Writer debug pre-release](https://github.com/atikturk/multiace-enhanced/releases/tag/android-rfid-20261106-preview) is included for review. It was built on 2026-11-06 and is intended for the development printer's **single ACE Pro Gen1 / V1** setup.
+A separate [Android RFID NFC Writer v1.1.0-beta pre-release](https://github.com/atikturk/multiace-enhanced/releases/tag/android-rfid-20261106-preview) is included for review. The updated debug APK was uploaded on 2026-11-11, with Turkish and English UI localization, and is intended for the development printer's **single ACE Pro Gen1 / V1** setup.
 
 The app is used to write custom filament RFID metadata (brand, material/type and color), supporting our Enhanced Web / Spoolman testing. **The Android source code is not included in this repository yet**; the APK is provided for functionality review, not as a reproducible Android build.
 
