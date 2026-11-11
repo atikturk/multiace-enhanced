@@ -19,6 +19,14 @@ Share field-tested integration changes and discuss which ones could be upstreame
 
 **Tool-change reliability:** `klipper/toolhead.py` and `klipper/extras/print_task_config.py` are included for comparison. The user reported 11/11 successful consecutive starts after TTC fixes on the existing hardware; the precise causal patch requires an upstream baseline diff before proposing a merge.
 
+## Android RFID companion build (Gen1 ACE)
+
+A separate [Android RFID NFC Writer debug pre-release](https://github.com/atikturk/multiace-enhanced/releases/tag/android-rfid-20261106-preview) is included for review. It was built on 2026-11-06 and is intended for the development printer's **single ACE Pro Gen1 / V1** setup.
+
+The app is used to write custom filament RFID metadata (brand, material/type and color), supporting our Enhanced Web / Spoolman testing. **The Android source code is not included in this repository yet**; the APK is provided for functionality review, not as a reproducible Android build.
+
+**Hardware-scope qualification:** Gen1 ACE firmware and the MultiACE Web UI do not necessarily expose identical RFID fields. The verified outcomes relate to the user's configured Gen1 setup and tag formats; no claim is made that every Gen1 firmware or stock U1 UI automatically exposes separate brand/type/color fields.
+
 ## Integration questions
 
 1. Which changes should be submitted to decay71/multiACE first?
