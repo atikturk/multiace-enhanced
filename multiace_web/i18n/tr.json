@@ -1230,10 +1230,13 @@
     "ace_connect_failed": "[multiACE] ACE {ace} cihazına bağlanılamadı",
     "ace_connect_failed_unload": "[multiACE] Boşaltma için ACE {ace} cihazına bağlanılamadı",
     "load_stock_feeder": "[multiACE] Kafa {head} stok besleyici üzerinden yüklendi (ACE kaynağı yok)",
-    "swap_ghost_refused": "[multiACE] SWAP reddedildi: Kafa {head} sensöründe filament var ancak head_source eşlemesi yok. Besleme desteğinin hangi ACE'yi kullanacağı güvenli biçimde belirlenemiyor. Kurtarma: ACEC__Unload_All çalıştırın, ardından ACEB__Load_{head} çalıştırıp baskıyı yeniden başlatın."
+    "swap_ghost_refused": "[multiACE] SWAP reddedildi: Kafa {head} sensöründe filament var ancak head_source eşlemesi yok. Besleme desteğinin hangi ACE'yi kullanacağı güvenli biçimde belirlenemiyor. Kurtarma: ACEC__Unload_All çalıştırın, ardından ACEB__Load_{head} çalıştırıp baskıyı yeniden başlatın.",
+    "version_file": "[multiACE] v{version} build={build} dosya={ts}",
+    "version_line": "[multiACE] v{version} build={build} (dosya: {ts})"
   },
   "_meta": {
     "name": "Türkçe",
-    "fallback": "en"
+    "fallback": "en",
+    "language": "tr"
   }
 }
