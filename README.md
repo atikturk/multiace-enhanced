@@ -31,7 +31,16 @@ The development printer runs **PAXX 2.0.0-paxx12-24-417e639** with a **multiACE 
 | `tests/` | Offline snapshot syntax and SHA256 verification |
 | `docs/` | Provenance, test evidence, compatibility notes and technical handoff |
 
-Source files are snapshots from an already configured device. They are **not** sufficient to rebuild or install a fully configured system on another printer. See `docs/SOURCE_MANIFEST.md`, `docs/VALIDATION_20261111.md`, and `docs/PAXX_TECHNICAL_BRIEF.md` when those files are present.
+Source files are snapshots from an already configured device. They are **not** sufficient to rebuild or install a fully configured system on another printer. See [Source manifest](docs/SOURCE_MANIFEST.md), [field validation](docs/VALIDATION_20261111.md), and the [PAXX technical brief](docs/PAXX_TECHNICAL_BRIEF.md).
+
+## Android RFID NFC Writer — development APK
+
+An accompanying Android NFC/RFID writer build for the **ACE Pro Gen1 / V1** setup is available as a separate **pre-release**:
+
+- [Android RFID NFC Writer — 2026-11-06 debug preview](../../releases/tag/android-rfid-20261106-preview)
+- Artifact: `app-debug.apk` (debug build; for testing and technical review only)
+
+The Android application was developed to write filament tag metadata for testing with the existing MultiACE Enhanced / Spoolman setup. Our physical testing uses **one Gen1 ACE Pro**. **This APK is not a signed production release**, and the Android application source code is **not yet included** in this repository. The APK should not be mistaken for a ready-to-install MultiACE firmware package.
 
 ## Contributing upstream
 
