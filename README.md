@@ -37,10 +37,10 @@ Source files are snapshots from an already configured device. They are **not** s
 
 An accompanying Android NFC/RFID writer build for the **ACE Pro Gen1 / V1** setup is available as a separate **pre-release**:
 
-- [Android RFID NFC Writer — 2026-11-06 debug preview](../../releases/tag/android-rfid-20261106-preview)
-- Artifact: `app-debug.apk` (debug build; for testing and technical review only)
+- [Android RFID NFC Writer v1.1.0-beta — Turkish / English](../../releases/tag/android-rfid-20261106-preview)
+- Artifact: `app-debug.apk` (updated 2026-11-11; debug build for testing and technical review only)
 
-The Android application was developed to write filament tag metadata for testing with the existing MultiACE Enhanced / Spoolman setup. Our physical testing uses **one Gen1 ACE Pro**. **This APK is not a signed production release**, and the Android application source code is **not yet included** in this repository. The APK should not be mistaken for a ready-to-install MultiACE firmware package.
+The Android application was developed to write filament tag metadata for testing with the existing MultiACE Enhanced / Spoolman setup. v1.1.0-beta adds Turkish and English interface localization, with automatic language selection based on the Android device locale. Our physical testing uses **one Gen1 ACE Pro**. **This APK is not a signed production release**, and the Android application source code is **not yet included** in this repository. The APK should not be mistaken for a ready-to-install MultiACE firmware package.
 
 ## Contributing upstream
 
