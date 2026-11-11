@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+*.pid
+
+# Backups and recovery archives
+*.bak
+*.bak-*
+*.backup
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.7z
+
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa
+id_ed25519
+
+# Editor and operating system
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local runtime data
+spoolman.db
+*.sqlite
+*.sqlite3
