@@ -1,100 +1,56 @@
-# multiace-enhanced
-# MultiACE Enhanced for Snapmaker U1
+# MultiACE Enhanced — Snapmaker U1
 
-Enhanced MultiACE integration for the Snapmaker U1, focused on improving reliability, automation, filament management, and system recovery.
+Community-maintained source snapshot and integration work for **Snapmaker U1**, based on **decay71 multiACE** and the **PAXX Extended Firmware** ecosystem.
 
-## Overview
+## Project status
 
-MultiACE Enhanced is an independent enhancement project built around MultiACE and the Snapmaker U1 ecosystem.
+**Source-review / development snapshot — not a one-click installer or an official PAXX package.**
 
-The project focuses on improving the integration between MultiACE, Klipper, ACE Pro filament systems, RFID identification, and Spoolman.
+The development printer runs **PAXX 2.0.0-paxx12-24-417e639** with a **multiACE 1.27b** engine. The project documents verified local improvements and aims to contribute reviewable changes upstream.
 
-The primary goal is to create a stable, maintainable, and recoverable system for everyday multi-material 3D printing.
+**PAXX 2.1.0 managed multiACE has not been validated with this Enhanced installation.** Do not apply these files directly to a different firmware version.
 
-## Features
+## Work areas
 
-- Enhanced MultiACE integration for Snapmaker U1
-- Improved tool-change and TTC reliability
-- Auto Replenish workflow improvements
-- RFID filament identification and management
-- Spoolman integration
-- Filament loading and feeding improvements
-- Air Guard and Dirty Bed Control compatibility
-- Persistent system modifications across cold boots
-- Firmware compatibility validation
-- Backup, recovery, and rollback mechanisms
-- Diagnostic and system health-check utilities
+- **Auto Replenish:** a narrow feeder-state exception to support replenishment during a print.
+- **Tool changes / TTC:** investigated printer-side timing and tool-change reliability.
+- **RFID and Spoolman:** Gen1 ACE tag handling, inventory integration and Web display behavior.
+- **Enhanced Web:** backend API additions, frontend changes and translations.
+- **Persistence and recovery:** hash-aware startup restoration, compatibility checks and a PAXX 2.0 recovery standard.
+- **Field evidence:** prior 11/11 print-start testing and cold-boot persistence checks on the development device.
 
-## Development Environment
+## Source layout
 
-| Component | Platform |
+| Directory | Contents |
 |---|---|
-| 3D Printer | Snapmaker U1 |
-| Firmware | PAXX Enhanced / PAXX 2.0 |
-| Multi-material System | Anycubic ACE Pro |
-| Multi-material Software | MultiACE |
-| Firmware Control | Klipper |
-| Filament Database | Spoolman |
-| Operating Environment | Embedded Linux |
+| `klipper/` | Selected live MultiACE/Klipper modules and printer integration |
+| `multiace_web/` | Enhanced backend, frontend and translations |
+| `firmware/` | PAXX 2.0 build identification and selected service scripts |
+| `recovery/` | Existing persistence and recovery scripts for code review |
+| `scripts/` | Compatibility helper |
+| `tests/` | Offline snapshot syntax and SHA256 verification |
+| `docs/` | Provenance, test evidence, compatibility notes and technical handoff |
 
-## Project Goals
+Source files are snapshots from an already configured device. They are **not** sufficient to rebuild or install a fully configured system on another printer. See `docs/SOURCE_MANIFEST.md`, `docs/VALIDATION_20261111.md`, and `docs/PAXX_TECHNICAL_BRIEF.md` when those files are present.
 
-1. Improve reliability during multi-material printing.
-2. Reduce failures during tool changes and filament handling.
-3. Enhance RFID and Spoolman interoperability.
-4. Preserve modifications across firmware restarts and cold boots.
-5. Provide reliable backup and recovery procedures.
-6. Document tested improvements for the community.
+## Contributing upstream
 
-## Current Development Status
+The intended workflow is to isolate and review individual improvements for **decay71/multiACE** and PAXX, with particular attention to the small Auto Replenish behavior change. A monolithic merge is not assumed.
 
-**Active Development**
+## Acknowledgements
 
-The project has undergone practical testing on a Snapmaker U1 running PAXX firmware and MultiACE.
+Special thanks to **PAXX**, **decay71**, and **donkie** for their contributions to the open-source U1 and filament-management ecosystem.
 
-Current development includes:
+- [PAXX Extended Firmware](https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware)
+- [decay71/multiACE](https://github.com/decay71/multiACE)
+- [Spoolman](https://github.com/Donkie/Spoolman)
 
-- Tool-change reliability improvements
-- MultiACE backend and frontend integration
-- RFID handling and filament identification
-- Firmware compatibility checks
-- Persistent modification management
-- Recovery and rollback testing
-
-Not all experimental modifications are ready for public installation.
-
-## Installation
-
-Installation instructions will be published after the relevant components have been reviewed and prepared for distribution.
-
-**Do not install development files directly on a production printer without verifying firmware compatibility and creating a complete backup.**
-
-## Documentation
-
-Technical documentation, change history, recovery procedures, and installation instructions will be added as the repository develops.
-
-## Credits
-
-## Acknowledgements & Special Thanks
-
-MultiACE Enhanced would not have been possible without the dedication, knowledge, and contributions of the developers who helped build the Snapmaker U1 custom firmware and MultiACE ecosystem.
-
-Special thanks to:
-
-- **PAXX** — For the custom firmware development and the foundation that makes advanced customization of the Snapmaker U1 possible.
-- **decay71** — For valuable contributions to the MultiACE ecosystem and its development.
-- **donkie** — For valuable contributions and technical work supporting the SPOOLMAN ecosystem.
-
-Their work, dedication, and willingness to share their knowledge with the community are sincerely appreciated.
-
-**MultiACE Enhanced builds upon the foundations established by these developers, with great respect for their original work.**
-
-Thank you for making further development possible.
+See [CREDITS.md](CREDITS.md) for full acknowledgement. This is an independent community effort, not an official or endorsed PAXX/decay71 release.
 
 ## License
 
-License information will be added after reviewing the licensing requirements of the upstream projects.
+This repository contains the **GNU General Public License v3.0** in [LICENSE](LICENSE). Preserve applicable upstream copyright notices and any component-specific licensing terms when reusing or distributing modifications.
 
----
+## Safety of this snapshot
 
-**MultiACE Enhanced — Improving multi-material printing reliability on Snapmaker U1.**
+Avoid executing the recovery and initialization scripts on an unverified target. Hardware-dependent behavior, dependencies and rollback on a clean installation have **not** been independently verified.
