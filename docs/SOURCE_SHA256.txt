@@ -1,4 +1,7 @@
 # Snapshot source SHA256
+# HISTORICAL 2026-11-11 extraction manifest. This is NOT the current main-branch SHA256 manifest.
+# The 2026-11-12 README, frontend, translations, init hook, and persistence patches were updated later.
+# See docs/VALIDATION_20261112.md for the dated printer recovery archive SHA256.
 # hash  repo_file  original_printer_path
 15591597dc284ad1c73bcfa78c4d9aca1f299aec56aee90f076084ef13f43e6d  firmware/BUILD_VERSION  /etc/BUILD_VERSION
 ec04fea83d88f2cc1d7cc033d4cba19c77e60ac9943ded399673d2d9a03bd06c  firmware/init.d/S57multiace-tools  /etc/init.d/S57multiace-tools
