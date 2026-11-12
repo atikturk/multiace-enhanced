@@ -55,35 +55,31 @@ fi
 W=$P/payload/multiace_web
 
 restore_web_tree() {
-
+    # MULTIACE_FILEWISE_WEB_RESTORE_V1
+    # Never replace an entire tree based on a single representative hash.
     T="$1"; A="$2"; B="$3"; REP="$4"
-
-    AH=$(sha256sum "$A/$REP" 2>/dev/null | awk '{print $1}')
-
-    BH=$(sha256sum "$B/$REP" 2>/dev/null | awk '{print $1}')
-
-    TH=$(sha256sum "$T/$REP" 2>/dev/null | awk '{print $1}')
-
-    if [ "$TH" = "$AH" ]; then
-
-        echo "OK_WEB $T" >> "$LOG"
-
-    elif [ "$TH" = "$BH" ]; then
-
-        mkdir -p "$T"
-
-        cp -a "$A"/. "$T"/
-
-        echo "RESTORED_WEB $T" >> "$LOG"
-
-    else
-
-        echo "SKIP_INCOMPATIBLE_WEB $T hash=$TH" >> "$LOG"
-
-    fi
-
+    [ -d "$A" ] || return 0
+    mkdir -p "$T"
+    find "$A" -type f | while IFS= read -r SRC; do
+        REL="${SRC#"$A"/}"
+        DST="$T/$REL"
+        BASE="$B/$REL"
+        AH=$(sha256sum "$SRC" | awk '{print $1}')
+        TH=$(sha256sum "$DST" 2>/dev/null | awk '{print $1}')
+        BH=$(sha256sum "$BASE" 2>/dev/null | awk '{print $1}')
+        if [ -L "$DST" ]; then
+            echo "SKIP_SYMLINK_WEB $DST" >> "$LOG"
+        elif [ "$TH" = "$AH" ]; then
+            :
+        elif [ ! -e "$DST" ] || { [ -n "$BH" ] && [ "$TH" = "$BH" ]; }; then
+            mkdir -p "$(dirname "$DST")"
+            cp -a "$SRC" "$DST"
+            echo "RESTORED_WEB_FILE $DST" >> "$LOG"
+        else
+            echo "SKIP_INCOMPATIBLE_WEB_FILE $DST hash=$TH" >> "$LOG"
+        fi
+    done
 }
-
 restore_web_tree /home/lava/multiace_web/frontend "$W/active/frontend" "$W/baseline/frontend" app.js
 
 restore_web_tree /home/lava/multiace_web/backend "$W/active/backend" "$W/baseline/backend" main.py
