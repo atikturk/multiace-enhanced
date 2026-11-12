@@ -21,7 +21,7 @@
 | `recovery/apply.sh` | `/oem/multiace_persist/apply.sh` |
 | `scripts/paxx_multiace_compat.py` | `/oem/multiace_persist/tools/paxx_multiace_compat.py` |
 
-All copied source files are unmodified bytes. See `SOURCE_SHA256.txt` for per-file SHA256 hashes; the original printer source path is preserved in each manifest row.
+The initial 2026-11-11 copied source files were unmodified bytes. **Subsequent version-controlled changes** to Web labels/catalogs, persistence logic, and the S98 boot hook mean these original checksums no longer describe all files on `main`. See the *historical* `SOURCE_SHA256.txt` for the original printer export, and [`VALIDATION_20261112.md`](VALIDATION_20261112.md) for the recovery validation and updated boot hook evidence.
 
 ## Deliberately omitted
 
