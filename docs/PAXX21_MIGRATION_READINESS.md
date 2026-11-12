@@ -2,6 +2,10 @@
 
 **Prepared:** 2026-11-12 · **Status:** PREPARED FOR REVIEW; **NOT CLEARED FOR FLASHING OR AUTOMATED MIGRATION**
 
+## Offline verification of the uploaded 7f435c3 firmware binary
+
+On 2026-11-12 the actual PAXX `extended-multiace` rolling `7f435c3` firmware image was uploaded and its official SHA256 verified. The extracted native Snapmaker touchscreen resources **include Turkish** (`tr-TR.json`, 553 translation keys matching English key set). PAXX-managed MultiACE is **pinned separately** to decay71 `v1.27b`; its provider package is downloaded at enablement rather than bundled in the rootfs. Klipper stock files and boot service differ materially from the current Enhanced live system. These findings do **not** authorize flashing or establish touchscreen runtime stability. See [the actual firmware binary audit](PAXX21_FIRMWARE_BIN_AUDIT_20261112.md) for hashes and evidence.
+
 ## Verified upstream state (2026-11-12)
 
 - Public PAXX repository: https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware
