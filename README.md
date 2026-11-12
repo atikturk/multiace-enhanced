@@ -12,6 +12,8 @@ The development printer runs **PAXX 2.0.0-paxx12-24-417e639** with a **multiACE 
 
 **2026-11-12 printer validation update:** Enhanced Web and all four locales survived cold boot, the guarded restore boot hook ran with `APPLY_OK`, and V3.1 full recovery archive creation passed strict manifest verification (9,517 files). See [2026-11-12 validation and recovery hash](docs/VALIDATION_20261112.md). Auto Replenish's final four-file active promotion still requires a *subsequent* cold-boot acceptance check; the archive has not been restore-tested.
 
+**PAXX 2.1 readiness:** See the [guarded migration plan](docs/PAXX21_MIGRATION_READINESS.md). The rolling managed multiACE profile is not a direct drop-in upgrade for our standalone Enhanced installation; firmware flashing remains blocked pending a specific-build compatibility and rollback review.
+
 ## Work areas
 
 - **Auto Replenish:** a narrow feeder-state exception to support replenishment during a print.
