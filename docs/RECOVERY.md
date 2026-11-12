@@ -27,13 +27,15 @@ Location on the development printer:
 
 `/oem/multiace_persist/recovery/make_full_recovery.sh`
 
-The script will be published after reviewing its dependencies, backup paths, and compatibility requirements.
+The script is tracked in this repository as [`recovery/make_full_recovery.sh`](../recovery/make_full_recovery.sh). Printer-local script revisions and dependencies must be compared before use.
 
 ## Validation
 
 The V3.1 script has passed shell syntax validation and standard marker checks.
 
-Full execution and archive verification results will be documented separately.
+Full execution and archive verification **PASSED on 2026-11-12** for the printer snapshot recorded in [`VALIDATION_20261112.md`](VALIDATION_20261112.md). The checked archive contains 9,517 regular files (230,288,451 bytes; approx. 220 MiB), with SHA256 `ab22434dace0244918095e35f5b2e69f30a3df81998bf575c6c3771f48564481`.
+
+**Not yet established:** a real archive restore/rollback rehearsal or post-promotion Auto Replenish cold-boot revalidation. Successful archive integrity checks are not a restore test.
 
 ## Important
 
