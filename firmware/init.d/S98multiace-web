@@ -1,4 +1,23 @@
 #!/bin/sh
+
+# MULTIACE_ENHANCED_PERSIST_BOOT_HOOK_V1
+# Restore verified Enhanced files before starting MultiACE Web.
+if [ "$1" = "start" ]; then
+    PERSIST_SCRIPT=/oem/multiace_persist/apply.sh
+    RUN_LOG=/oem/multiace_persist/state/apply_boot_runner.log
+
+    if [ -x "$PERSIST_SCRIPT" ]; then
+        echo "START $(date -u)" >> "$RUN_LOG"
+
+        if "$PERSIST_SCRIPT" >> "$RUN_LOG" 2>&1; then
+            echo "APPLY_OK $(date -u)" >> "$RUN_LOG"
+        else
+            echo "APPLY_FAILED $(date -u)" >> "$RUN_LOG"
+        fi
+    fi
+fi
+# END MULTIACE_ENHANCED_PERSIST_BOOT_HOOK_V1
+
 # BEGIN SPOOLMAN_PAXX20_BOOT_HOOK
 # rcS glob is expanded before overlay mounting.
 # S98 exists in the original boot list and launches the overlay S99.
