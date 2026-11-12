@@ -60,7 +60,7 @@ restore_web_tree() {
     T="$1"; A="$2"; B="$3"; REP="$4"
     [ -d "$A" ] || return 0
     mkdir -p "$T"
-    find "$A" -type f | while IFS= read -r SRC; do
+    find "$A" -type f ! -path '*/__pycache__/*' ! -name '*.pyc' ! -name '*.pyo' | while IFS= read -r SRC; do
         REL="${SRC#"$A"/}"
         DST="$T/$REL"
         BASE="$B/$REL"
