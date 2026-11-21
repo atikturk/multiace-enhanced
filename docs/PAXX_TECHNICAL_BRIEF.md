@@ -17,7 +17,7 @@ Share field-tested integration changes and discuss which ones could be upstreame
 
 **Cold boot / persistence:** `recovery/apply.sh`, service scripts and the recovery/compatibility tools show the existing PAXX 2.0 approach, including hash-aware compatibility checks. They are not a drop-in solution for PAXX 2.1.0's managed bind-mount architecture.
 
-**Tool-change reliability:** `klipper/toolhead.py` and `klipper/extras/print_task_config.py` are included for comparison. The user reported 11/11 successful consecutive starts after TTC fixes on the existing hardware; the precise causal patch requires an upstream baseline diff before proposing a merge.
+**Time To Close (TTC) clarification:** In this project, **TTC means Time To Close**, not Tool Change. Earlier documentation incorrectly conflated these terms. The operator reported a Time To Close fix on the working printer, but its exact source changes have not yet been isolated against a suitable stock/PAXX baseline. The reported 11/11 consecutive successful starts are separate field observations, not a code-level proof of a TTC patch. `klipper/toolhead.py` and `klipper/extras/print_task_config.py` remain available for independent printer-integration review, without claiming they contain the TTC fix.
 
 ## Android RFID companion build (Gen1 ACE)
 
