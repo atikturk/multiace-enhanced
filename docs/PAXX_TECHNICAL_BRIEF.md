@@ -17,7 +17,7 @@ Share field-tested integration changes and discuss which ones could be upstreame
 
 **Cold boot / persistence:** `recovery/apply.sh`, service scripts and the recovery/compatibility tools show the existing PAXX 2.0 approach, including hash-aware compatibility checks. They are not a drop-in solution for PAXX 2.1.0's managed bind-mount architecture.
 
-**Time To Close (TTC) clarification:** In this project, **TTC means Time To Close**, not Tool Change. Earlier documentation incorrectly conflated these terms. The operator reported a Time To Close fix on the working printer, but its exact source changes have not yet been isolated against a suitable stock/PAXX baseline. The reported 11/11 consecutive successful starts are separate field observations, not a code-level proof of a TTC patch. `klipper/toolhead.py` and `klipper/extras/print_task_config.py` remain available for independent printer-integration review, without claiming they contain the TTC fix.
+**Time To Close (TTC), not Tool Change:** The observed MCU `Timer too close` shutdown during Z homing/probing led to a development-side Klipper [`toolhead.py`](../klipper/toolhead.py) DRIP timing change: `DRIP_SEGMENT_TIME` 0.050 → 0.100 and `DRIP_TIME` 0.100 → 0.350 (previous values from development notes; current values confirmed in this repository). The operator subsequently reported 11 consecutive successful print starts. This is field evidence, **not a verified causal proof or an upstream-baseline diff**. See [TTC technical note](TTC_TIME_TO_CLOSE.md). Do not conflate this issue with tool changes or upstream multiACE ownership.
 
 ## Android RFID companion build (Gen1 ACE)
 
