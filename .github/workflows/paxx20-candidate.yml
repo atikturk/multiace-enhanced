@@ -32,6 +32,18 @@ jobs:
           sudo rm -rf /usr/local/lib/android /opt/hostedtoolcache /usr/share/dotnet /usr/local/share/powershell
           df -h .
 
+      # PAXX's builder chroots into a Snapmaker ARM64 rootfs to install
+      # Python packages. An x86_64 GitHub runner needs binfmt_misc + QEMU.
+      - name: Enable ARM64 emulation for PAXX firmware chroot
+        run: |
+          set -euo pipefail
+          docker run --rm --privileged tonistiigi/binfmt --install arm64
+          test -r /proc/sys/fs/binfmt_misc/qemu-aarch64
+          cat /proc/sys/fs/binfmt_misc/qemu-aarch64
+          grep -q '^enabled' /proc/sys/fs/binfmt_misc/qemu-aarch64
+          grep -Eq '^flags:.*F' /proc/sys/fs/binfmt_misc/qemu-aarch64
+          docker run --rm --platform linux/arm64 arm64v8/alpine:3.21 uname -m | grep -qx aarch64
+
       - name: Checkout pinned upstream sources
         run: |
           set -euo pipefail
