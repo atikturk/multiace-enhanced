@@ -23,7 +23,7 @@ This repository began as a **2026-11-11 working-printer source export**, not a G
 ## Work areas
 
 - **Auto Replenish:** a narrow feeder-state exception to support replenishment during a print.
-- **Time To Close (TTC):** TTC means **Time To Close**, not Tool Change. Its source-level delta and proper firmware baseline have not yet been isolated for upstream review.
+- **Time To Close (TTC):** MCU `Timer too close` errors during Z homing/probing were addressed on the development printer with Klipper `toolhead.py` DRIP timing values (`DRIP_SEGMENT_TIME = 0.100`, `DRIP_TIME = 0.350`). This is field-tested development behavior, **not yet a verified diff against an exact upstream PAXX/stock firmware baseline**. See [TTC technical note](docs/TTC_TIME_TO_CLOSE.md).
 - **RFID and Spoolman:** Gen1 ACE tag handling, inventory integration and Web display behavior.
 - **Enhanced Web:** backend API additions, frontend changes and translations.
 - **Persistence and recovery:** hash-aware startup restoration, compatibility checks and a PAXX 2.0 recovery standard.
