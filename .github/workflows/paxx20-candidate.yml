@@ -92,7 +92,9 @@ jobs:
           cp "$RUNNER_TEMP/enhanced-overlay/STAGING_MANIFEST.json" "$RUNNER_TEMP/candidate-report/"
           printf '%s\n' 'NOT A RELEASE: no first-boot Spoolman setup, no clean-install test, no physical ACE testing.' > "$RUNNER_TEMP/candidate-report/NOT_FLASHABLE.txt"
           cat "$RUNNER_TEMP/candidate-report/sha256.txt"
-          rm -f "$f"
+          # Firmware was written by PAXX Docker build as root; runner cannot unlink it.
+          # Keep the report, but remove the unvalidated test binary using sudo.
+          sudo rm -f -- "$f"
 
       - name: Upload QA report only (never expose candidate .bin)
         if: success()
