@@ -5,7 +5,7 @@ Development history and improvements for MultiACE Enhanced on Snapmaker U1.
 ## Unreleased — Active Development
 
 ### Time To Close (TTC) & Printing Reliability
-- **TTC means Time To Close, not Tool Change.** Documented the tested development-side Klipper DRIP timing values (`DRIP_SEGMENT_TIME = 0.100`, `DRIP_TIME = 0.350`) and the operator's 11 consecutive successful print-start observations. The corresponding stock/PAXX baseline diff remains to be verified. See [TTC technical note](TTC_TIME_TO_CLOSE.md).
+- **TTC means Time To Close, not Tool Change.** Documented the tested development-side Klipper DRIP timing values (`DRIP_SEGMENT_TIME = 0.100`, `DRIP_TIME = 0.350`) and the operator's initial 11 consecutive successful print starts, followed by **no recurrence on any subsequent prints on the development printer** (post-fix print count not recorded). The corresponding stock/PAXX baseline diff remains to be verified. See [TTC technical note](TTC_TIME_TO_CLOSE.md).
 - Enhanced filament loading and unloading behavior.
 - Investigated and corrected multi-material printing issues.
 - Validated consecutive printing operations.
