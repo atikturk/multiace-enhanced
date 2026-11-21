@@ -4,8 +4,8 @@ Development history and improvements for MultiACE Enhanced on Snapmaker U1.
 
 ## Unreleased — Active Development
 
-### Tool Change & Printing Reliability
-- Improved tool-change (TTC) workflow reliability.
+### Time To Close (TTC) & Printing Reliability
+- **TTC means Time To Close, not Tool Change.** The reported TTC work on the development printer is not yet isolated as a reviewable source patch.
 - Enhanced filament loading and unloading behavior.
 - Investigated and corrected multi-material printing issues.
 - Validated consecutive printing operations.
