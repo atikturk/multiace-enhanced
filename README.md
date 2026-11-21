@@ -14,6 +14,12 @@ The development printer runs **PAXX 2.0.0-paxx12-24-417e639** with a **multiACE 
 
 **PAXX 2.1 readiness:** See the [guarded migration plan](docs/PAXX21_MIGRATION_READINESS.md). The rolling managed multiACE profile is not a direct drop-in upgrade for our standalone Enhanced installation; firmware flashing remains blocked pending a specific-build compatibility and rollback review.
 
+## Upstream history and verified differences
+
+This repository began as a **2026-11-11 working-printer source export**, not a Git fork, so it does **not** contain decay71's earlier commits. The upstream base is **decay71/multiACE v1.27b**. We are separating genuine Enhanced changes from unchanged upstream code instead of treating the complete snapshot as original work.
+
+**For maintainers (including PAXX):** [Upstream provenance and verified file-by-file differences](docs/UPSTREAM_PROVENANCE.md) — includes the small `REPLENISH` / `PRELOAD_FINISH` change, files verified unchanged, and remaining comparison work.
+
 ## Work areas
 
 - **Auto Replenish:** a narrow feeder-state exception to support replenishment during a print.
