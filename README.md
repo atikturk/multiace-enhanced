@@ -23,7 +23,7 @@ This repository began as a **2026-11-11 working-printer source export**, not a G
 ## Work areas
 
 - **Auto Replenish:** a narrow feeder-state exception to support replenishment during a print.
-- **Tool changes / TTC:** investigated printer-side timing and tool-change reliability.
+- **Time To Close (TTC):** TTC means **Time To Close**, not Tool Change. Its source-level delta and proper firmware baseline have not yet been isolated for upstream review.
 - **RFID and Spoolman:** Gen1 ACE tag handling, inventory integration and Web display behavior.
 - **Enhanced Web:** backend API additions, frontend changes and translations.
 - **Persistence and recovery:** hash-aware startup restoration, compatibility checks and a PAXX 2.0 recovery standard.
