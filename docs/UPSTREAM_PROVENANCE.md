@@ -42,7 +42,8 @@ These upstream decoders are foundational components we use. **We do not claim to
 | Translations | Upstream v1.27b already includes **English, German, Chinese**. Enhanced adds a [Turkish catalog](../multiace_web/i18n/tr.json) and makes other catalog edits | Do **not** claim English/German/Chinese languages were newly invented by Enhanced |
 | PAXX 2.0 persistence and boot handling | [`recovery/apply.sh`](../recovery/apply.sh) and [`firmware/init.d/`](../firmware/init.d) reflect local boot and guarded-restore work | PAXX-specific integration; not necessarily applicable to PAXX 2.1 managed profile |
 | Full recovery | [`make_full_recovery.sh`](../recovery/make_full_recovery.sh) and [validation evidence](VALIDATION_20261112.md) | Archive creation and integrity checks were observed, **restore rehearsal not yet demonstrated** |
-| Tool-change / TTC | [`klipper/toolhead.py`](../klipper/toolhead.py) and [`print_task_config.py`](../klipper/extras/print_task_config.py) | A causal patch relative to the correct stock/PAXX baseline remains **unverified** |
+| Time To Close (TTC) | Earlier notes mistakenly called TTC “Tool Change”; **TTC means Time To Close** here | Exact Time To Close code change and its original firmware baseline **not yet identified**; no upstream patch claimed |
+| Printer toolhead / print-task integration (separate topic) | [`klipper/toolhead.py`](../klipper/toolhead.py) and [`print_task_config.py`](../klipper/extras/print_task_config.py) | Upstream/stock baseline and causal differences remain **unverified** |
 | Android RFID writer | An Android **debug APK** is available in Releases; its source is **not** in this repository | Companion test tool, not evidence of a source patch to decay71 |
 
 ## Git history and next maintenance steps
