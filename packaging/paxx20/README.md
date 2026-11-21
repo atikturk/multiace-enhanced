@@ -13,6 +13,8 @@
 
 **Important:** PAXX 2.0 has Spoolman **integration** in Firmware Config / Filament Manager, but that is not evidence a standalone Spoolman **server** is already deployed on a fresh printer. This project must supply and initialize a clean persistent Spoolman service. The developer's own printer has an additional customized server in `/oem/multiace_persist` — do not distribute its database or personal runtime state.
 
+**Spoolman packaging discovery (2026-11-21):** current upstream Spoolman v0.27.1's `scripts/start.sh` requires its own `.venv` and `.env`; the repo-only source is NOT runnable immediately after copying. Its exported `requirements.txt` pins `websockets==15.0.1`, while the Enhanced Web requirements specify `websockets>=11,<14`. Build the Web service and Spoolman in **separate Python environments** with a persistent Spoolman data directory. The exact version to ship must pass the real PAXX 2.0 U1 runtime tests; a working printer's private runtime files are not an appropriate substitute.
+
 ## Target user experience
 
 1. Download one signed/checksummed `U1_extended-multiace-enhanced_2.0.0-..._upgrade.bin` from *our* GitHub Releases (NOT YET PRESENT).
@@ -42,7 +44,7 @@ Create `overlays/mods/enhanced/9x-multiace-enhanced/` and build with `PROFILE=ex
 - [ ] Confirm exact PAXX 2.0 base firmware checksum and reproducible custom image build.
 - [ ] Confirm the published Enhanced code snapshot matches the intended field-tested runtime; document any changes after that validation.
 - [ ] Implement clean-first-boot ACE config generation and auto-start **without a post-flash SSH installation step**.
-- [ ] Package, run and cold-boot a *fresh, empty* Spoolman server; confirm persistence and API health.
+- [ ] Package, run and cold-boot a *fresh, empty* Spoolman server in its own Python environment; confirm persistence, `.env` generation, API health and separation from the Enhanced Web dependencies.
 - [ ] Verify Nginx Web access, all four languages, and Python dependencies on the actual firmware image.
 - [ ] Test empty printer/ACE disconnected behavior, then Gen1 ACE attached with preload/load/unload.
 - [ ] Reproduce physical TTC, in-print Auto Replenish, RFID/Spoolman matched and unmatched tags.
