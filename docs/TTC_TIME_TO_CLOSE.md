@@ -33,7 +33,7 @@ The current source values above are verifiable in this repository. **The previou
 
 ## Validation and limitations
 
-After the timing changes, the operator initially confirmed **11 consecutive successful print starts**. The operator has since clarified that **none of the subsequent prints on the same development printer has produced another `Timer too close` error**. Therefore, **11 is the initial recorded test series, not the total number of successful prints since the fix**. The full post-fix print count and observation duration have not been quantified; no claim of a universal fix or proof of which setting is causally necessary is made. Cold-boot persistence checks were separately reported.
+After the timing changes, the operator initially confirmed **11 consecutive successful print starts**. The operator has since clarified that **none of the subsequent prints on the same development printer has produced another `Timer too close` error**. Therefore, **11 is the initial recorded test series, not the total number of successful prints since the fix**. The operator estimates **approximately 20 prints since 4 November 2026**, all without recurrence of the TTC error. This is an approximate user-reported print count, not a count extracted from printer logs, and should not automatically be added to the initial 11 starts because overlap has not been ruled out. No claim of a universal fix or proof of which setting is causally necessary is made. Cold-boot persistence checks were separately reported.
 
 An earlier experiment using a dedicated MCU homing command queue in `mcu.py` did **not** solve the recurring TTC fault: the error recurred on a later print start. **Do not present that trial as the validated TTC fix.**
 
