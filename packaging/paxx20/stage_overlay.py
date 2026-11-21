@@ -84,10 +84,15 @@ def main():
     copy_dir(sources["enhanced"] / "multiace_web/i18n", out, root / "home/lava/multiace/i18n")
 
     for name in ("S57multiace-tools", "S58multiace-mode", "S98multiace-web"):
-        copy_file(sources["enhanced"] / "firmware/init.d" / name, out, root / "etc/init.d" / name)
+        dst = root / "etc/init.d" / name
+        copy_file(sources["enhanced"] / "firmware/init.d" / name, out, dst)
+        (out / dst).chmod(0o755)  # BusyBox rcS skips non-executable init scripts.
     copy_file(sources["multiace"] / "multiace/web/deploy/multiace-web.nginx.conf", out, root / "etc/nginx/fluidd.d/multiace-web.conf")
     for rel in ("ace.cfg", "multiace/ace_vars.cfg", "multiace/ace_mode_switch.sh"):
-        copy_file(sources["multiace"] / "multiace/config/extended" / rel, out, root / "usr/local/share/firmware-config/extended" / rel)
+        dst = root / "usr/local/share/firmware-config/extended" / rel
+        copy_file(sources["multiace"] / "multiace/config/extended" / rel, out, dst)
+        if rel.endswith(".sh"):
+            (out / dst).chmod(0o755)
 
     manifest = {
         "status": "SOURCE STAGING ONLY - DO NOT FLASH",
