@@ -7,6 +7,9 @@ on:
     paths:
       - 'packaging/paxx20/**'
       - '.github/workflows/paxx20-candidate.yml'
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
