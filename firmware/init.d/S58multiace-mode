@@ -7,9 +7,71 @@ start() {
         return 0
     fi
     mode="multi"
+    m=""
     if [ -f "$VARS_FILE" ]; then
         m="$(sed -n "s/^ace__mode *= *'\\([^']*\\)'.*/\\1/p" "$VARS_FILE" | head -1)"
         [ -n "$m" ] && mode="$m"
+        if [ -z "$m" ] && grep -Eq '^[[:space:]]*ace__mode[[:space:]]*=' "$VARS_FILE"; then
+            logger -t multiace-mode "ace__mode exists but is malformed - refusing to overwrite"
+            return 1
+        fi
+    fi
+    # Without a saved mode S58 activates ACE files, but ace.py defaults
+    # to normal and skips USB discovery. Seed multi before Klipper loads.
+    # Never replace an existing user-selected mode (including normal).
+    if [ -z "$m" ]; then
+        if [ -e "$VARS_FILE" ]; then
+            if ! grep -qx '[[]Variables[]]' "$VARS_FILE"; then
+                logger -t multiace-mode "ace_vars.cfg has no Variables section - refusing to modify"
+                return 1
+            fi
+        else
+            mkdir -p "$(dirname "$VARS_FILE")" || return 1
+            printf '[Variables]\n' > "$VARS_FILE" || return 1
+            chown lava:lava "$VARS_FILE" || return 1
+        fi
+        printf "\nace__mode = 'multi'\n" >> "$VARS_FILE" || return 1
+        logger -t multiace-mode "initialized missing ace__mode=multi before Klipper startup"
+    fi
+    # PAXX 1.6 -> Enhanced upgrades retain ace.cfg if it already exists.
+    # The new S49 template's URL will not replace an older blank setting.
+    # Default to the bundled local server only when no explicit spool
+    # preference exists. Never overwrite a custom URL or local/spoollink.
+    ACE_CFG=/home/lava/printer_data/config/extended/ace.cfg
+    if [ -f "$ACE_CFG" ] &&
+       grep -Eq '^spoolman_url:[[:space:]]*
+        multi|single|head)
+            logger -t multiace-mode "applying mode swap: $mode -> ace"
+            bash "$SWITCH_SCRIPT" ace >/dev/null 2>&1 \
+                && logger -t multiace-mode "swap ok" \
+                || logger -t multiace-mode "swap returned non-zero (continuing)"
+            ;;
+        normal|"")
+            logger -t multiace-mode "mode=$mode - leaving stock Klipper modules in place"
+            ;;
+        *)
+            logger -t multiace-mode "unknown mode '$mode' - leaving as-is"
+            ;;
+    esac
+}
+case "$1" in
+    start|"")    start ;;
+    stop)        ;;
+    restart)     start ;;
+    *)           echo "Usage: $0 {start|stop|restart}"; exit 1 ;;
+esac
+exit 0
+ "$ACE_CFG"; then
+        spool_mode="$(sed -n 's/^spool_mode:[[:space:]]*//p' "$ACE_CFG" | head -1)"
+        case "$spool_mode" in
+            ""|spoolman)
+                sed -i 's|^spoolman_url:[[:space:]]*$|spoolman_url: http://127.0.0.1:7912|' "$ACE_CFG" || return 1
+                logger -t multiace-mode "configured bundled Spoolman URL for existing blank ace.cfg"
+                ;;
+            *)
+                logger -t multiace-mode "preserving explicit spool_mode=$spool_mode"
+                ;;
+        esac
     fi
     case "$mode" in
         multi|single|head)

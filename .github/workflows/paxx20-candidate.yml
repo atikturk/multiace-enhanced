@@ -75,6 +75,17 @@ jobs:
           npm run build
           test -s build/200.html
 
+      # The React UI is the familiar Spoolman interface used before v0.26.
+      # Build BOTH clients so either can be selected without internet/pip/npm
+      # on the U1. Only the newer Svelte client is the upstream default.
+      - name: Build pinned Spoolman legacy React Web client for offline firmware
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/sources/spoolman/client"
+          npm ci
+          npm run build
+          test -s dist/index.html
+
       - name: Prepare source-only firmware overlay
         run: |
           set -euo pipefail

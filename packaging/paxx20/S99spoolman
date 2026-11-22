@@ -20,6 +20,17 @@ choose_data_dir() {
     fi
 }
 DATA_DIR="$(choose_data_dir)"
+# Preserve the user's familiar pre-v0.26 React UI as the default on this
+# custom firmware. Both modern and classic clients ship in squashfs; either
+# uses the same database and API. Users can opt into the new interface by
+# placing the word "modern" in persistent spoolman/web-client and restarting.
+LEGACY_CLIENT=TRUE
+if [ -f "$DATA_DIR/web-client" ]; then
+    case "$(head -n 1 "$DATA_DIR/web-client")" in
+        modern|v2) LEGACY_CLIENT=FALSE ;;
+        legacy|classic) LEGACY_CLIENT=TRUE ;;
+    esac
+fi
 LOGFILE=/home/lava/printer_data/logs/spoolman-enhanced.log
 
 pid_alive() {
@@ -87,6 +98,7 @@ PY_SQLITE_BACKUP
         export SPOOLMAN_DIR_LOGS='$DATA_DIR'
         export SPOOLMAN_DIR_BACKUPS='$DATA_DIR/backups'
         export SPOOLMAN_DB_TYPE=sqlite
+        export SPOOLMAN_LEGACY_CLIENT='$LEGACY_CLIENT'
         export SPOOLMAN_UPDATE_CHECK=FALSE
         exec /usr/bin/python3 -m uvicorn spoolman.main:app --host 0.0.0.0 --port $PORT --log-level warning >>'$LOGFILE' 2>&1
     " || return 1

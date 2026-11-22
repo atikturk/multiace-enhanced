@@ -6,6 +6,9 @@ set -euo pipefail
 ROOTFS="$(realpath "$1")"
 test -f "$ROOTFS/etc/init.d/S99spoolman"
 test -f "$ROOTFS/home/lava/spoolman/client_v2/build/200.html"
+test -s "$ROOTFS/home/lava/spoolman/client/dist/index.html"
+grep -q 'LEGACY_CLIENT=TRUE' "$ROOTFS/etc/init.d/S99spoolman"
+grep -q "export SPOOLMAN_LEGACY_CLIENT=" "$ROOTFS/etc/init.d/S99spoolman"
 
 stop_spoolman() {
   sudo chroot "$ROOTFS" /etc/init.d/S99spoolman stop >/dev/null 2>&1 || true

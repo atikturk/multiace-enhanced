@@ -8,6 +8,31 @@ test -x "$ROOTFS/etc/init.d/S49extended-config"
 test -x "$ROOTFS/etc/init.d/S58multiace-mode"
 test -x "$ROOTFS/etc/init.d/S98multiace-web"
 test -x "$ROOTFS/etc/init.d/S99spoolman"
+test -s "$ROOTFS/home/lava/spoolman/client_v2/build/200.html"
+test -s "$ROOTFS/home/lava/spoolman/client/dist/index.html"
+echo "QA: both Spoolman Web interfaces included for user choice"
+VUE="$ROOTFS/home/lava/multiace_web/frontend/vendor/vue.global.prod.js"
+VUE_MIRROR="$ROOTFS/home/lava/multiace/web/frontend/vendor/vue.global.prod.js"
+test -s "$VUE"
+test -s "$VUE_MIRROR"
+cmp -s "$VUE" "$VUE_MIRROR"
+grep -q 'vue v3.4.21' "$VUE"
+echo "QA: offline Vue runtime is bundled in both Enhanced frontend paths"
+# This hardware-proven Auto Replenish fix must not regress during repack.
+LIVE_EXTRAS="$ROOTFS/home/lava/klipper/klippy/extras"
+sha_feed='15d714577aca6c123b726e63df94bb07dc61ec4e9b2e55da2019bf4ff78d4f8c'
+sha_sensor='92bf276593c0cb2953de8955868224916458032fcffdb1de0cfe415c4871ddc0'
+for spec in "filament_feed_ace.py:$sha_feed" "filament_switch_sensor_ace.py:$sha_sensor"; do
+    name="${spec%%:*}"
+    expected="${spec#*:}"
+    actual="$(sha256sum "$LIVE_EXTRAS/$name" | cut -d' ' -f1)"
+    test "$actual" = "$expected" || {
+        echo "FAIL: verified Auto Replenish snapshot changed: $name" >&2
+        echo "expected=$expected actual=$actual" >&2
+        exit 1
+    }
+done
+echo "QA: hardware-verified Auto Replenish source hashes preserved"
 test -f "$ROOTFS/usr/local/share/multiace-enhanced/PAXX20_INTEGRATED_FW"
 # The old printer OEM replay must not run from the baked Web service.
 if grep -q -e "MULTIACE_ENHANCED_PERSIST_BOOT_HOOK_V1" \
@@ -36,8 +61,25 @@ sudo chroot "$ROOTFS" /bin/test -x /home/lava/printer_data/config/extended/multi
 sudo chroot "$ROOTFS" /bin/grep -qx '\[include ../ace.cfg\]' /home/lava/printer_data/config/extended/klipper/90_multiace.cfg
 sudo chroot "$ROOTFS" /bin/grep -q 'spoolman_url: http://127.0.0.1:7912' /home/lava/printer_data/config/extended/ace.cfg
 
-echo "QA: running S58 default ACE activation"
+# A PAXX 1.6 -> Enhanced upgrade can retain a save_variables file
+# with no ace__mode. Simulate that exact condition before S58.
+VARS="/home/lava/printer_data/config/extended/multiace/ace_vars.cfg"
+if [ -e "$ROOTFS$VARS" ]; then
+    sudo chroot "$ROOTFS" /bin/sed -i '/^ace__mode *=/d' "$VARS"
+fi
+# Legacy PAXX upgrades can retain an empty Spoolman URL even when
+# the new firmware's seed template correctly sets it.
+sudo chroot "$ROOTFS" /bin/sed -i \
+  's|^spoolman_url: http://127.0.0.1:7912$|spoolman_url:|' \
+  /home/lava/printer_data/config/extended/ace.cfg
+echo "QA: running S58 with missing mode and legacy blank Spoolman URL"
 sudo chroot "$ROOTFS" /etc/init.d/S58multiace-mode start
+sudo chroot "$ROOTFS" /bin/grep -qx \
+  'spoolman_url: http://127.0.0.1:7912' \
+  /home/lava/printer_data/config/extended/ace.cfg
+echo "QA: legacy blank Spoolman URL configured"
+sudo chroot "$ROOTFS" /bin/grep -qx "ace__mode = 'multi'" "$VARS"
+echo "QA: missing ace__mode seeded successfully"
 backup="$ROOTFS/home/lava/klipper/klippy/extras/filament_feed_pre_multiace.py"
 test -s "$backup"
 test "$(sha256sum "$backup" | cut -d ' ' -f1)" = "$baseline"

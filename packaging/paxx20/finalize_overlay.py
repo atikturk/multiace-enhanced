@@ -114,6 +114,9 @@ def main() -> None:
     client = root / "home/lava/spoolman/client_v2/build/200.html"
     if not client.is_file():
         raise SystemExit("Spoolman Svelte Web bundle missing (npm run build first)")
+    legacy = root / "home/lava/spoolman/client/dist/index.html"
+    if not legacy.is_file():
+        raise SystemExit("Spoolman legacy React Web bundle missing (npm run build in client/ first)")
     manifest = out / "STAGING_MANIFEST.json"
     data = json.loads(manifest.read_text())
     data["status"] = "OFFLINE INTEGRATION QA - NOT FOR INSTALL"

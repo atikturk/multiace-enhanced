@@ -58,6 +58,7 @@ def main():
     require_file(sources["enhanced"], "firmware/init.d/S98multiace-web")
     require_file(sources["multiace"], "multiace/install_multiace.sh")
     require_file(sources["multiace"], "multiace/config/extended/ace.cfg")
+    require_file(sources["multiace"], "multiace/web/frontend/vendor/vue.global.prod.js")
     require_file(sources["multiace"], "multiace/config/extended/multiace/ace_mode_switch.sh")
     require_file(sources["multiace"], "multiace/web/deploy/multiace-web.nginx.conf")
     require_file(sources["spoolman"], "scripts/start.sh")
@@ -82,6 +83,14 @@ def main():
     copy_dir(sources["enhanced"] / "multiace_web/backend", out, root / "home/lava/multiace/web/backend")
     copy_dir(sources["enhanced"] / "multiace_web/frontend", out, root / "home/lava/multiace/web/frontend")
     copy_dir(sources["enhanced"] / "multiace_web/i18n", out, root / "home/lava/multiace/i18n")
+
+    # The Enhanced snapshot does not vend Vue. Copy the MIT-licensed runtime
+    # from the already pinned decay71/multiACE v1.27b checkout.
+    # Never rely on an internet CDN for an offline printer web interface.
+    vue_src = sources["multiace"] / "multiace/web/frontend/vendor/vue.global.prod.js"
+    for webroot in ("home/lava/multiace_web/frontend",
+                    "home/lava/multiace/web/frontend"):
+        copy_file(vue_src, out, root / webroot / "vendor/vue.global.prod.js")
 
     for name in ("S57multiace-tools", "S58multiace-mode", "S98multiace-web"):
         dst = root / "etc/init.d" / name
