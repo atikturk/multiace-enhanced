@@ -6,6 +6,18 @@ set -euo pipefail
 ROOTFS="$(realpath "$1")"
 test -x "$ROOTFS/etc/init.d/S49extended-config"
 test -x "$ROOTFS/etc/init.d/S58multiace-mode"
+test -x "$ROOTFS/etc/init.d/S98multiace-web"
+test -x "$ROOTFS/etc/init.d/S99spoolman"
+test -f "$ROOTFS/usr/local/share/multiace-enhanced/PAXX20_INTEGRATED_FW"
+# The old printer OEM replay must not run from the baked Web service.
+if grep -q -e "MULTIACE_ENHANCED_PERSIST_BOOT_HOOK_V1" \
+           -e "PERSIST_SCRIPT=/oem/multiace_persist/apply.sh" \
+           -e "SPOOLMAN_PAXX20_BOOT_HOOK" \
+           "$ROOTFS/etc/init.d/S98multiace-web"; then
+    echo "FAIL: legacy OEM persistence or double-Spoolman boot hook survived" >&2
+    exit 1
+fi
+echo "QA: legacy persistence replay removed from baked Web service"
 test -s "$ROOTFS/usr/local/share/firmware-config/extended/ace.cfg"
 test -s "$ROOTFS/usr/local/share/firmware-config/extended/klipper/90_multiace.cfg"
 
