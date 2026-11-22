@@ -82,6 +82,7 @@ PY_SQLITE_BACKUP
     start-stop-daemon -S -b -m -p "$PIDFILE" -c lava -x /bin/sh -- -c "
         cd '$APP' || exit 1
         export HOME=/home/lava PYTHONPATH='$VENDOR'
+        export PATH='$VENDOR/bin:/home/lava/.local/bin:/usr/bin:/bin'
         export SPOOLMAN_DIR_DATA='$DATA_DIR'
         export SPOOLMAN_DIR_LOGS='$DATA_DIR'
         export SPOOLMAN_DIR_BACKUPS='$DATA_DIR/backups'
