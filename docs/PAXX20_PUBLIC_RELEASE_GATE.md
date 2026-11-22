@@ -5,7 +5,7 @@
 **Last updated:** 2026-11-22.  
 **Current candidate:** [GitHub Actions #49](https://github.com/atikturk/multiace-enhanced/actions/runs/45058047153), commit `9be7c886786a5c7249e1218beb90f3d0561351ea`.  
 **Candidate image SHA256:** `b3fb88cea6a4c9480ec23ad734886ab2cd029ece04f1efb53af62f880358280a`.  
-**Status:** **Unpublished stable draft**. The actual #49 firmware has been installed on a Snapmaker U1 from a cleaned PAXX 1.6 baseline; the operator reports that everything is in place. This establishes initial on-device acceptance, and two cold-boot checks were reported successful, including re-establishing/persisting a clean T2 source association. Detailed security, license, clean-device and rollback publication gates remain. See [2026-11-22 hardware acceptance record](VALIDATION_20261122_BUILD49.md).
+**Status:** **Unpublished stable draft**. The actual #49 firmware has been installed on a Snapmaker U1 from a cleaned PAXX 1.6 baseline; the operator reports that everything is in place. This establishes initial on-device acceptance, and two cold-boot checks were reported successful, including re-establishing/persisting a clean T2 source association. Detailed security, license, clean-device and rollback publication gates remain. **Specific legal blocker:** complete firmware includes Snapmaker proprietary software; independent downstream redistribution permission is not verified, see [third-party notices](THIRD_PARTY_NOTICES.md#proprietary-snapmaker-firmware-separate-redistribution-permission-required). See [2026-11-22 hardware acceptance record](VALIDATION_20261122_BUILD49.md).
 
 ## Goal and scope
 
