@@ -1,6 +1,6 @@
 # PAXX 2.0 + MultiACE Enhanced — Stable v2.0.0-enhanced.1
 
-**First public stable firmware release for Snapmaker U1.**
+**Prepared stable firmware release for Snapmaker U1 — NOT YET PUBLIC.** Full binary distribution requires proprietary firmware redistribution clearance; see [licensing gate](THIRD_PARTY_NOTICES.md#proprietary-snapmaker-firmware-separate-redistribution-permission-required).
 
 This is an independent community-built integration of PAXX Extended Firmware, decay71 multiACE and Donkie Spoolman. It is **not** an official Snapmaker, PAXX, decay71 or donkie release.
 
