@@ -44,7 +44,23 @@ jobs:
           fi
           echo "Classic React UI has /api/v1 compiled in."
           cd dist
-          find . -type f -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt
+          # Never hash the checksum manifest while the shell is writing it.
+          # This self-reference made live hotfix verification fail.
+          find . -type f ! -name SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt
+          sha256sum -c SHA256SUMS.txt >/dev/null
+          if grep -q 'SHA256SUMS.txt
+
+      - name: Upload only classic UI files, no firmware or database
+        uses: actions/upload-artifact@v4
+        with:
+          name: spoolman-v0271-classic-UI-hotfix
+          path: spoolman/client/dist/
+          retention-days: 14
+          if-no-files-found: error
+ SHA256SUMS.txt; then
+            echo 'ERROR: checksum manifest must not contain itself' >&2
+            exit 1
+          fi
           du -sh .
 
       - name: Upload only classic UI files, no firmware or database
