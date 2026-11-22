@@ -59,6 +59,11 @@ jobs:
           git -C "$RUNNER_TEMP/sources/multiace" rev-parse HEAD
           git -C "$RUNNER_TEMP/sources/spoolman" rev-parse HEAD
 
+      - name: Set up Node 24 for Spoolman v0.27.1 Svelte client
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
       - name: Build pinned Spoolman Svelte Web client for offline firmware
         run: |
           set -euo pipefail
