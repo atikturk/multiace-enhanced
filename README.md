@@ -1,12 +1,13 @@
 # MultiACE Enhanced — Snapmaker U1
 
 > **PAXX 2.0 public firmware project:** Candidate #49 is built and has passed
-> automated/emulated QA, but the **#49 integrated .bin still awaits a physical
-> installation and cold-boot acceptance test**. The repository is public;
-> no firmware binary has yet been published as a GitHub Release.
+> automated/emulated QA, and the **integrated #49 image has now been installed
+> on the development Snapmaker U1 after PAXX 1.6**. The operator reports the
+> system working. Two post-#49 cold boots and release auditing remain;
+> the stable GitHub Release remains an unpublished draft.
 > See [release acceptance plan](docs/PAXX20_PUBLIC_RELEASE_GATE.md) and
-> [CHANGELOG.md](CHANGELOG.md). Previous #47 hardware testing plus web
-> hotfixes must not be reported as an actual #49 installation.
+> [CHANGELOG.md](CHANGELOG.md) and the [2026-11-22 on-device test record](docs/VALIDATION_20261122_BUILD49.md).
+> Previous #47 web-hotfix testing is tracked separately from the new #49 installation.
 
 
 Community-maintained source snapshot and integration work for **Snapmaker U1**, based on **decay71 multiACE** and the **PAXX Extended Firmware** ecosystem.
