@@ -1,9 +1,8 @@
 # Changelog — MultiACE Enhanced (PAXX 2.0)
 
-This file records **candidate** firmware changes; no stable public Snapmaker U1
-firmware has been released from this repository as of 2026-11-22.
+This file records the first public stable MultiACE Enhanced firmware for Snapmaker U1, built from candidate #49 and accepted on the operator's physical printer in November 2026.
 
-## Unreleased — PAXX 2.0 + MultiACE Enhanced candidate #49 (2026-11-22)
+## v2.0.0-enhanced.1 — PAXX 2.0 + MultiACE Enhanced (2026-11-22)
 
 Build evidence: [GitHub Actions #49](https://github.com/atikturk/multiace-enhanced/actions/runs/45058047153)
 
@@ -46,9 +45,10 @@ Firmware SHA256: `b3fb88cea6a4c9480ec23ad734886ab2cd029ece04f1efb53af62f88035828
   and the new association survived the subsequent reported cold boot.
   Four RFID slot weights and Spoolman IDs are verified by UI screenshot.
   See the [field record](docs/VALIDATION_20261122_BUILD49.md).
-- The stable Release remains **a draft**, pending complete source/license,
-  private-data and rollback verification. Do not confuse passing these field
-  tests with a demonstrated in-print runout/physical TTC stress test.
+- The public stable release follows reviewed source/license notices, firmware
+  checksum verification, physical installation and two operator-reported cold
+  boots. These do not independently establish physical runout/TTC-under-load
+  stress performance or a full archive-restore rehearsal.
 - In-print runout, TTC under load, fresh-device installation and rollback
   acceptance require separate truthful evidence. Do not label them as passed
   merely because code hashes or emulated QA checks passed.
