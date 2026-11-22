@@ -1,87 +1,78 @@
 # MultiACE Enhanced — Snapmaker U1
 
-> **PAXX 2.0 public firmware project:** Candidate #49 is built and has passed
-> automated/emulated QA, and the **integrated #49 image has now been installed
-> on the development Snapmaker U1 after PAXX 1.6**. The operator reports the
-> system working. Two post-#49 cold boots and release auditing remain;
-> the stable GitHub Release remains an unpublished draft.
-> See [release acceptance plan](docs/PAXX20_PUBLIC_RELEASE_GATE.md) and
-> [CHANGELOG.md](CHANGELOG.md) and the [2026-11-22 on-device test record](docs/VALIDATION_20261122_BUILD49.md).
-> Previous #47 web-hotfix testing is tracked separately from the new #49 installation.
+**Public stable firmware:** [v2.0.0-enhanced.1](https://github.com/atikturk/multiace-enhanced/releases/tag/v2.0.0-enhanced.1)  
+**Target:** Snapmaker U1 • PAXX **2.0** (based on `v2.0.0-paxx12-24`) • multiACE Enhanced based on decay71 `v1.27b` • bundled Spoolman `v0.27.1`.
 
+A self-contained, community-built **USB-upgrade firmware** integrating PAXX Extended Firmware, MultiACE Enhanced Web, RFID/Spoolman and additional print/filament features. The same integration is tracked in this open-source repository.
 
-Community-maintained source snapshot and integration work for **Snapmaker U1**, based on **decay71 multiACE** and the **PAXX Extended Firmware** ecosystem.
+**Important:** Independent project. Not affiliated with or endorsed by Snapmaker, PAXX, decay71 or donkie. **Not tested for PAXX 2.1** or other Snapmaker models. Like any custom firmware, installation carries device and data risks; use the verified backup and rollback instructions.
 
-## Project status
+## Download and install
 
-**Source-review / development snapshot — not a one-click installer or an official PAXX package.**
+The public release contains:
 
-The development printer runs **PAXX 2.0.0-paxx12-24-417e639** with a **multiACE 1.27b** engine. The project documents verified local improvements and aims to contribute reviewable changes upstream.
+- `U1_extended-enhanced_2.0.0-stable1_upgrade.bin`
+- `SHA256SUMS.txt`
 
-**PAXX 2.1.0 managed multiACE has not been validated with this Enhanced installation.** Do not apply these files directly to a different firmware version.
+SHA256 of the first stable firmware binary:
 
-**2026-11-12 printer validation update:** Enhanced Web and all four locales survived cold boot, the guarded restore boot hook ran with `APPLY_OK`, and V3.1 full recovery archive creation passed strict manifest verification (9,517 files). See [2026-11-12 validation and recovery hash](docs/VALIDATION_20261112.md). Auto Replenish's final four-file active promotion still requires a *subsequent* cold-boot acceptance check; the archive has not been restore-tested.
+```text
+b3fb88cea6a4c9480ec23ad734886ab2cd029ece04f1efb53af62f880358280a
+```
 
-**PAXX 2.1 readiness:** See the [guarded migration plan](docs/PAXX21_MIGRATION_READINESS.md). The rolling managed multiACE profile is not a direct drop-in upgrade for our standalone Enhanced installation; firmware flashing remains blocked pending a specific-build compatibility and rollback review.
+Download, verify checksum, copy the `.bin` to a FAT32 USB drive and use the Snapmaker U1 touchscreen **Settings → About → Firmware Version → Local Update**. **No additional post-flash SSH installation is intended.**
 
-## Work areas
+- [Complete installation and preflight](docs/INSTALLATION.md)
+- [Rollback, printer configuration and Spoolman database recovery](docs/RECOVERY.md)
+- [2026-11-22 real-printer acceptance record](docs/VALIDATION_20261122_BUILD49.md)
+- [Firmware changes](CHANGELOG.md)
+- [Source/license notice](docs/THIRD_PARTY_NOTICES.md)
 
-- **Auto Replenish:** a narrow feeder-state exception to support replenishment during a print.
-- **Tool changes / TTC:** investigated printer-side timing and tool-change reliability.
-- **RFID and Spoolman:** Gen1 ACE tag handling, inventory integration and Web display behavior.
-- **Enhanced Web:** backend API additions, frontend changes and translations.
-- **Persistence and recovery:** hash-aware startup restoration, compatibility checks and a PAXX 2.0 recovery standard.
-- **Field evidence:** prior 11/11 print-start testing and cold-boot persistence checks on the development device.
+## Included features
 
-## MultiACE Enhanced Web — interface preview
+- **MultiACE Enhanced** frontend/backend with Turkish, English, German and Chinese UI resources.
+- One local **Spoolman 0.27.1** service on port `7912`; both the familiar **classic React** interface and the newer Svelte interface are packaged for offline use. Classic UI is default with same-origin `/api/v1`.
+- RFID identification, per-slot material/vendor/colour, remaining grams and progress bars from uniquely matched Spoolman data, without requiring automatic adoption. `spoolman_auto=False` can remain enabled for **read-only previews**.
+- One integrated Klipper/ACE installation and startup with ACE load/unload, state feedback and color-coded ACE → toolhead connections when an authoritative ACE source is known.
+- Existing Enhanced work on **Auto Replenish**, tool-change/TTC code, local modes, Web and recovery. Individual print/runout corner cases should be validated for each machine; do not infer stress-tested hardware behavior from CI alone.
+- Four UI locales, integrated setup/QA scripts and reproducible build using pinned open-source inputs. The released binary is **not preloaded with operator Spoolman records, private config, RFID UIDs or printer secrets**.
 
-The following screenshot shows the live **ACE Pro Gen1 (V1) filament panel** of our Enhanced Web application, including RFID identification, Spoolman-linked spools and U1 toolhead preload status.
+## Hardware acceptance
 
-![MultiACE Enhanced Web showing ACE Pro Gen1 RFID, Spoolman and toolhead status](docs/screenshots/multiace-enhanced-web-ace-gen1.png)
+Built in [PAXX firmware Actions #49](https://github.com/atikturk/multiace-enhanced/actions/runs/45058047153) from source commit `9be7c886786a5c7249e1218beb90f3d0561351ea`; firmware checksum above.
 
-*Screenshot from the development printer, November 2026. This is the ACE/filament-management section, not the entire Web application.*
+The developer installed the **integrated firmware** on their Snapmaker U1 from a cleaned PAXX 1.6 baseline, with no follow-up frontend/backend/Spoolman hotfix. Verified: working MultiACE Web, classic Spoolman, four RFID-matched Spoolman progress bars (IDs #34, #29, #35, #36), normal unload/reload of T2, restored known-source wiring and two user-reported successful cold boots.
 
-## Source layout
+**Limits:** This is one operator/device and upgrade path, **not** a guarantee that every fresh/upgrade path, in-print runout, TTC under load, another ACE hardware revision or full backup restore has passed. Please report reproducible issues with firmware version and logs.
 
-| Directory | Contents |
+## Interface preview
+
+![MultiACE Enhanced Web — ACE Pro Gen1 RFID and Spoolman](docs/screenshots/multiace-enhanced-web-ace-gen1.png)
+
+*Photo from the project's development U1 in November 2026; may differ from other printers.*
+
+## Corresponding source and rebuild
+
+The following source directories are part of the firmware's corresponding integration source:
+
+| Path | Description |
 |---|---|
-| `klipper/` | Selected live MultiACE/Klipper modules and printer integration |
-| `multiace_web/` | Enhanced backend, frontend and translations |
-| `firmware/` | PAXX 2.0 build identification and selected service scripts |
-| `recovery/` | Existing persistence and recovery scripts for code review |
-| `scripts/` | Compatibility helper |
-| `tests/` | Offline snapshot syntax and SHA256 verification |
-| `docs/` | Provenance, test evidence, compatibility notes and technical handoff |
+| [`klipper/`](klipper/) | MultiACE/Klipper modifications, including ACE modes |
+| [`multiace_web/`](multiace_web/) | Enhanced backend, Vue frontend and four locale catalogs |
+| [`firmware/`](firmware/) | init services and version metadata |
+| [`packaging/paxx20/`](packaging/paxx20/) | Firmware overlay staging, first-boot setup, ARM64 dependencies and QA |
+| [`.github/workflows/paxx20-candidate.yml`](.github/workflows/paxx20-candidate.yml) | Pinned complete PAXX+multiACE+Spoolman build |
+| [`recovery/`](recovery/) | Historical, hardware-specific backup and recovery scripts; do not run blindly on another printer |
+| [`docs/`](docs/) | Provenance, installation, hardware acceptance and recovery |
 
-Source files are snapshots from an already configured device. They are **not** sufficient to rebuild or install a fully configured system on another printer. See [Source manifest](docs/SOURCE_MANIFEST.md), [field validation](docs/VALIDATION_20261111.md), and the [PAXX technical brief](docs/PAXX_TECHNICAL_BRIEF.md).
+Build baseline: [PAXX v2.0.0-paxx12-24](https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/releases/tag/v2.0.0-paxx12-24), [decay71/multiACE v1.27b](https://github.com/decay71/multiACE/releases/tag/v1.27b), [Donkie/Spoolman v0.27.1](https://github.com/Donkie/Spoolman/releases/tag/v0.27.1). PAXX's builder uses the stock U1 firmware input declared in its pinned `vars.mk`. Build work requires a compatible Linux/Docker/ARM64 emulation environment.
 
-## Android RFID NFC Writer — development APK
+## Separate Android RFID writer
 
-An accompanying Android NFC/RFID writer build for the **ACE Pro Gen1 / V1** setup is available as a separate **pre-release**:
+The earlier [Android RFID/NFC Writer v1.1.0-beta](https://github.com/atikturk/multiace-enhanced/releases/tag/android-rfid-20261106-preview) is **a different artifact** (development/debug APK) and must not be confused with this stable printer firmware.
 
-- [Android RFID NFC Writer v1.1.0-beta — Turkish / English](../../releases/tag/android-rfid-20261106-preview)
-- Artifact: `app-debug.apk` (updated 2026-11-11; debug build for testing and technical review only)
+## Contributors and licensing
 
-The Android application was developed to write filament tag metadata for testing with the existing MultiACE Enhanced / Spoolman setup. v1.1.0-beta adds Turkish and English interface localization, with automatic language selection based on the Android device locale. Our physical testing uses **one Gen1 ACE Pro**. **This APK is not a signed production release**, and the Android application source code is **not yet included** in this repository. The APK should not be mistaken for a ready-to-install MultiACE firmware package.
+Special thanks to **PAXX**, **decay71** and **donkie** for their foundational work. Full [credits](CREDITS.md), [GPL-3.0 repository license](LICENSE) and [component-specific notices](docs/THIRD_PARTY_NOTICES.md). Preserve original license/copyright notices when redistributing any upstream components.
 
-## Contributing upstream
-
-The intended workflow is to isolate and review individual improvements for **decay71/multiACE** and PAXX, with particular attention to the small Auto Replenish behavior change. A monolithic merge is not assumed.
-
-## Acknowledgements
-
-Special thanks to **PAXX**, **decay71**, and **donkie** for their contributions to the open-source U1 and filament-management ecosystem.
-
-- [PAXX Extended Firmware](https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware)
-- [decay71/multiACE](https://github.com/decay71/multiACE)
-- [Spoolman](https://github.com/Donkie/Spoolman)
-
-See [CREDITS.md](CREDITS.md) for full acknowledgement. This is an independent community effort, not an official or endorsed PAXX/decay71 release.
-
-## License
-
-This repository contains the **GNU General Public License v3.0** in [LICENSE](LICENSE). Preserve applicable upstream copyright notices and any component-specific licensing terms when reusing or distributing modifications.
-
-## Safety of this snapshot
-
-Avoid executing the recovery and initialization scripts on an unverified target. Hardware-dependent behavior, dependencies and rollback on a clean installation have **not** been independently verified.
+Issues and feature feedback: [GitHub Issues](https://github.com/atikturk/multiace-enhanced/issues).
