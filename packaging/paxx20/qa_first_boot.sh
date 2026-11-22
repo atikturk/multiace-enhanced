@@ -18,6 +18,11 @@ test -s "$VUE_MIRROR"
 cmp -s "$VUE" "$VUE_MIRROR"
 grep -q 'vue v3.4.21' "$VUE"
 echo "QA: offline Vue runtime is bundled in both Enhanced frontend paths"
+# The inventory summary must read Spoolman independently of card bindings
+# and without turning on AUTO or writing back to the printer's Spoolman DB.
+grep -q 'result\["spoolman_inventory"\]' "$ROOTFS/home/lava/multiace_web/backend/main.py"
+grep -q 'state.spoolman_inventory?.remaining_weight' "$ROOTFS/home/lava/multiace_web/frontend/index.html"
+echo "QA: read-only Spoolman inventory summary bundled"
 # This hardware-proven Auto Replenish fix must not regress during repack.
 LIVE_EXTRAS="$ROOTFS/home/lava/klipper/klippy/extras"
 sha_feed='15d714577aca6c123b726e63df94bb07dc61ec4e9b2e55da2019bf4ff78d4f8c'
