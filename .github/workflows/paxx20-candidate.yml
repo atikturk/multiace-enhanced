@@ -99,6 +99,13 @@ jobs:
           ./dev.sh make build PROFILE=extended-enhanced \
             OUTPUT_FILE=firmware/U1_extended-enhanced-DEV-NOT-FOR-PRINTER.bin
 
+      - name: Smoke-test PAXX first-boot ACE config and normal-mode backup
+        run: |
+          set -euo pipefail
+          bash packaging/paxx20/qa_first_boot.sh \
+            "$RUNNER_TEMP/sources/paxx/tmp/firmware/rootfs" \
+            | tee "$RUNNER_TEMP/first-boot-smoke.log"
+
       - name: Smoke-test bundled Spoolman HTTP API and restart under ARM64
         run: |
           set -euo pipefail
@@ -117,6 +124,7 @@ jobs:
           cp "$RUNNER_TEMP/enhanced-overlay/STAGING_MANIFEST.json" "$RUNNER_TEMP/candidate-report/"
           cp "$RUNNER_TEMP/sources/paxx/tmp/firmware/TTC_COMPARISON.json" "$RUNNER_TEMP/candidate-report/"
           cp "$RUNNER_TEMP/sources/paxx/tmp/firmware/TTC_DIFF.patch" "$RUNNER_TEMP/candidate-report/"
+          cp "$RUNNER_TEMP/first-boot-smoke.log" "$RUNNER_TEMP/candidate-report/"
           test -s "$RUNNER_TEMP/sources/paxx/tmp/firmware/rootfs/etc/init.d/S99spoolman"
           test -f "$RUNNER_TEMP/sources/paxx/tmp/firmware/rootfs/home/lava/spoolman/.vendor/uvicorn/__init__.py"
           test -f "$RUNNER_TEMP/sources/paxx/tmp/firmware/rootfs/home/lava/multiace_web/.vendor/uvicorn/__init__.py"
