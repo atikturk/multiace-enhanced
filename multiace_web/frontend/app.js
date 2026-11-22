@@ -170,6 +170,7 @@ createApp({
       dryer: null,
       swap_in_progress: false,
       aces: [], toolheads: [], wiring: [],
+      spoolman_inventory: null,
       save_variables: {},
       bg_swap: {available: false, enabled_heads: [], busy: [], version: null},
     });
@@ -634,6 +635,11 @@ createApp({
       state.dryer         = s.dryer ?? null;
       state.swap_in_progress = !!s.swap_in_progress;
       state.aces          = Array.isArray(s.aces) ? s.aces : [];
+      // The dashboard's inventory total comes from the read-only Spoolman
+      // API summary, not from RFID/card bindings (AUTO may be disabled).
+      state.spoolman_inventory = (
+        s.spoolman_inventory && typeof s.spoolman_inventory === "object"
+      ) ? s.spoolman_inventory : null;
       state.toolheads     = Array.isArray(s.toolheads) ? s.toolheads : [];
       state.wiring        = Array.isArray(s.wiring) ? s.wiring : [];
       state.save_variables = s.save_variables || {};

@@ -1,0 +1,93 @@
+name: Prepare stable firmware release draft
+
+on:
+  push:
+    branches:
+      - release/paxx20-all-in-one
+    paths:
+      - '.github/workflows/paxx20-stable-draft.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  stage-stable-draft:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: v2.0.0-enhanced.1
+      CANDIDATE_RUN: '45058047153'
+      CANDIDATE_SHA: 9be7c886786a5c7249e1218beb90f3d0561351ea
+      IMAGE_SHA256: b3fb88cea6a4c9480ec23ad734886ab2cd029ece04f1efb53af62f880358280a
+    steps:
+      - name: Checkout sources and release documents
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check pinned build and avoid overwriting existing release
+        run: |
+          set -euo pipefail
+          git cat-file -e "$CANDIDATE_SHA^{commit}"
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release already exists; refusing to overwrite." >&2
+            exit 1
+          fi
+
+      - name: Retrieve and verify exact firmware from successful Actions 49
+        run: |
+          set -euo pipefail
+          mkdir -p payload release
+          gh run download "$CANDIDATE_RUN" --repo "$GITHUB_REPOSITORY" \
+            --name PAXX20-Enhanced-HARDWARE-UNTESTED-DO-NOT-PUBLISH \
+            --dir payload
+          test "$(find payload -type f -name '*.bin' | wc -l)" -eq 1
+          firmware="$(find payload -type f -name '*.bin' | head -n1)"
+          test -s "$firmware"
+          printf '%s  %s\n' "$IMAGE_SHA256" "$firmware" | sha256sum -c -
+          cp "$firmware" release/U1_extended-enhanced_2.0.0-stable1_upgrade.bin
+          cd release
+          sha256sum U1_extended-enhanced_2.0.0-stable1_upgrade.bin > SHA256SUMS.txt
+          sha256sum -c SHA256SUMS.txt
+
+      - name: Write notes for a stable release draft, not a published release
+        run: |
+          cat > release-notes.md <<'EOF'
+          # MultiACE Enhanced — PAXX 2.0 / Snapmaker U1
+
+          DRAFT. DO NOT PUBLISH BEFORE PHYSICAL FIRMWARE ACCEPTANCE.
+          Intended channel: STABLE (no beta release planned).
+
+          Built from source commit:
+          9be7c886786a5c7249e1218beb90f3d0561351ea
+
+          Binary SHA256:
+          b3fb88cea6a4c9480ec23ad734886ab2cd029ece04f1efb53af62f880358280a
+
+          Snapmaker U1, PAXX 2.0 only. Not verified for PAXX 2.1.
+          MultiACE Enhanced, Spoolman 0.27.1 with classic React UI default,
+          RFID-to-Spoolman gram previews with AUTO disabled, and Enhanced Web.
+
+          Publishing gate: verify this exact integrated binary on a real U1
+          WITHOUT manual hotfix files (include cold boot, UI, spool weights,
+          recovery). Check licensing, source distribution and repository
+          history for private data. Accurately report untested features.
+
+          Independent community integration. Thanks to PAXX, decay71,
+          donkie and upstream contributors.
+          https://github.com/atikturk/multiace-enhanced/blob/release/paxx20-all-in-one/docs/PAXX20_PUBLIC_RELEASE_GATE.md
+          EOF
+
+      - name: Stage an unpublished GitHub stable release draft
+        run: |
+          set -euo pipefail
+          gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
+            --target "$CANDIDATE_SHA" \
+            --title "PAXX 2.0 + MultiACE Enhanced — Stable v2.0.0-enhanced.1" \
+            --notes-file release-notes.md --draft \
+            release/U1_extended-enhanced_2.0.0-stable1_upgrade.bin \
+            release/SHA256SUMS.txt
+          echo "DRAFT ONLY; not yet available as a public release."

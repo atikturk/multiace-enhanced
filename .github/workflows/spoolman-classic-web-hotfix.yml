@@ -1,0 +1,58 @@
+name: Spoolman classic React Web hotfix (NO FIRMWARE)
+
+on:
+  push:
+    branches:
+      - release/paxx20-all-in-one
+    paths:
+      - '.github/workflows/spoolman-classic-web-hotfix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-classic-web:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Set up Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Checkout pinned Spoolman v0.27.1
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --branch v0.27.1 \
+            https://github.com/Donkie/Spoolman.git spoolman
+          git -C spoolman rev-parse HEAD
+
+      - name: Build classic React UI with same-origin Spoolman API
+        run: |
+          set -euo pipefail
+          cd spoolman/client
+          npm ci
+          export VITE_APIURL=/api/v1
+          npm run build
+          test -s dist/index.html
+          test -d dist/assets
+          grep -R -Fq '/api/v1' dist/assets
+          if grep -R -Fq 'Missing API URL' dist/assets; then
+            echo 'ERROR: legacy client still contains missing API URL screen' >&2
+            exit 1
+          fi
+          echo "Classic React UI has /api/v1 compiled in."
+          cd dist
+          # Exclude checksum manifest itself, including a stale one if present.
+          find . -type f ! -name SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt
+          sha256sum -c SHA256SUMS.txt > /dev/null
+          du -sh .
+
+      - name: Upload only classic UI files, no firmware or database
+        uses: actions/upload-artifact@v4
+        with:
+          name: spoolman-v0271-classic-UI-hotfix
+          path: spoolman/client/dist/
+          retention-days: 14
+          if-no-files-found: error

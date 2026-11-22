@@ -1,0 +1,142 @@
+#!/bin/sh
+# Standalone, bundled Spoolman on Snapmaker U1 (PAXX 2.0).
+# The application and its dependencies are baked into read-only squashfs.
+# Only the empty-on-first-boot SQLite database and logs live on persistent storage.
+NAME=spoolman
+APP=/home/lava/spoolman
+VENDOR=/home/lava/spoolman/.vendor
+PIDFILE=/var/run/spoolman-enhanced.pid
+PORT=7912
+
+# Preserve existing deployment data if it is present at the operator's
+# established PAXX 2.0 location; never ship a personal DB in the firmware.
+choose_data_dir() {
+    if [ -s /oem/multiace_persist/state/spoolman_data/spoolman.db ]; then
+        echo /oem/multiace_persist/state/spoolman_data
+    elif [ -s /home/lava/printer_data/spoolman/spoolman.db ]; then
+        echo /home/lava/printer_data/spoolman
+    else
+        echo /home/lava/printer_data/spoolman
+    fi
+}
+DATA_DIR="$(choose_data_dir)"
+# Preserve the user's familiar pre-v0.26 React UI as the default on this
+# custom firmware. Both modern and classic clients ship in squashfs; either
+# uses the same database and API. Users can opt into the new interface by
+# placing the word "modern" in persistent spoolman/web-client and restarting.
+LEGACY_CLIENT=TRUE
+if [ -f "$DATA_DIR/web-client" ]; then
+    case "$(head -n 1 "$DATA_DIR/web-client")" in
+        modern|v2) LEGACY_CLIENT=FALSE ;;
+        legacy|classic) LEGACY_CLIENT=TRUE ;;
+    esac
+fi
+LOGFILE=/home/lava/printer_data/logs/spoolman-enhanced.log
+
+pid_alive() {
+    [ -s "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE" 2>/dev/null)" 2>/dev/null
+}
+
+start() {
+    if pid_alive; then
+        echo "$NAME already running"
+        return 0
+    fi
+    if [ ! -f "$APP/spoolman/main.py" ] || [ ! -d "$VENDOR" ] ||
+       [ ! -f "$APP/client_v2/build/200.html" ]; then
+        echo "$NAME image is incomplete: missing app, ARM64 dependencies, or Web client" >&2
+        return 1
+    fi
+    if netstat -tln 2>/dev/null | grep -q ":$PORT "; then
+        echo "$NAME: port $PORT in use by another server; refusing to run a second copy" >&2
+        return 1
+    fi
+    mkdir -p "$DATA_DIR" "$DATA_DIR/backups" /home/lava/printer_data/logs || return 1
+    touch "$LOGFILE" || return 1
+    # Safeguard an existing, user-owned database before this firmware can
+    # migrate its schema. Never include this backup in the .bin image.
+    migration_marker="$DATA_DIR/.enhanced-v0271-first-start"
+    db="$DATA_DIR/spoolman.db"
+    if [ ! -e "$migration_marker" ]; then
+        if [ -s "$db" ]; then
+            snapshot="$DATA_DIR/spoolman.before-enhanced-v0271.db"
+            if [ ! -s "$snapshot" ]; then
+                /usr/bin/python3 - "$db" "$snapshot" <<'PY_SQLITE_BACKUP' || return 1
+import sqlite3
+import sys
+from pathlib import Path
+
+source, target = map(Path, sys.argv[1:])
+with sqlite3.connect(str(source), timeout=20) as live:
+    with sqlite3.connect(str(target), timeout=20) as backup:
+        live.backup(backup)
+        state = backup.execute("PRAGMA integrity_check").fetchone()[0]
+        if state != "ok":
+            raise SystemExit("Existing Spoolman database backup failed: " + str(state))
+print("Spoolman pre-upgrade SQLite backup:", target)
+PY_SQLITE_BACKUP
+            fi
+            if [ ! -s "$snapshot" ]; then
+                echo "$NAME: refusing database migration without verified backup" >&2
+                return 1
+            fi
+        fi
+        touch "$migration_marker" || return 1
+    fi
+    chown -R lava:lava "$DATA_DIR" 2>/dev/null || true
+    chown lava:lava "$LOGFILE" 2>/dev/null || true
+    rm -f "$PIDFILE"
+
+    # Bind to LAN for the official Spoolman UI and PAXX's local integration.
+    # Only user-owned, persistent data; never use an external database by default.
+    echo "Starting $NAME (data: $DATA_DIR)"
+    start-stop-daemon -S -b -m -p "$PIDFILE" -c lava -x /bin/sh -- -c "
+        cd '$APP' || exit 1
+        export HOME=/home/lava PYTHONPATH='$VENDOR'
+        export PATH='$VENDOR/bin:/home/lava/.local/bin:/usr/bin:/bin'
+        export SPOOLMAN_DIR_DATA='$DATA_DIR'
+        export SPOOLMAN_DIR_LOGS='$DATA_DIR'
+        export SPOOLMAN_DIR_BACKUPS='$DATA_DIR/backups'
+        export SPOOLMAN_DB_TYPE=sqlite
+        export SPOOLMAN_LEGACY_CLIENT='$LEGACY_CLIENT'
+        export SPOOLMAN_UPDATE_CHECK=FALSE
+        exec /usr/bin/python3 -m uvicorn spoolman.main:app --host 0.0.0.0 --port $PORT --log-level warning >>'$LOGFILE' 2>&1
+    " || return 1
+    sleep 3
+    if pid_alive; then
+        echo "$NAME started"
+        return 0
+    fi
+    echo "$NAME failed: see $LOGFILE" >&2
+    rm -f "$PIDFILE"
+    return 1
+}
+
+stop() {
+    if ! pid_alive; then
+        rm -f "$PIDFILE"
+        echo "$NAME stopped"
+        return 0
+    fi
+    pid="$(cat "$PIDFILE")"
+    kill -TERM "$pid" 2>/dev/null || true
+    n=0
+    while kill -0 "$pid" 2>/dev/null && [ "$n" -lt 10 ]; do
+        sleep 1
+        n=$((n + 1))
+    done
+    if kill -0 "$pid" 2>/dev/null; then
+        kill -KILL "$pid" 2>/dev/null || true
+    fi
+    rm -f "$PIDFILE"
+    echo "$NAME stopped"
+}
+case "${1:-}" in
+    start) start ;;
+    stop) stop ;;
+    restart|reload) stop; start ;;
+    status)
+        if pid_alive; then echo "$NAME running (pid $(cat "$PIDFILE"))"; exit 0; fi
+        echo "$NAME stopped"; exit 1 ;;
+    *) echo "Usage: $0 {start|stop|restart|status}" >&2; exit 1 ;;
+esac

@@ -343,21 +343,7 @@
               <strong>
                 {{
                   Math.round(
-                    visibleAces.reduce(
-                      (total, ace) =>
-                        total + ace.slots.reduce(
-                          (slotTotal, slot) =>
-                            slotTotal +
-                            (
-                              slot.spoolman &&
-                              Number(slot.spoolman.remaining_weight)
-                                ? Number(slot.spoolman.remaining_weight)
-                                : 0
-                            ),
-                          0
-                        ),
-                      0
-                    )
+                    Number(state.spoolman_inventory?.remaining_weight) || 0
                   )
                 }} g
               </strong>
