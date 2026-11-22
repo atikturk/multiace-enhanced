@@ -49,10 +49,34 @@ def main() -> None:
     before, remainder = text.split(begin, 1)
     _, after = remainder.split(end, 1)
     text = before + after
+
+    # The working printer used an OEM persistence replay hook to revive
+    # overlay-installed MultiACE after boot. An integrated firmware image has
+    # its complete sources/services baked into squashfs. Replaying that old
+    # apply.sh can restore incompatible code, run legacy Auto Replenish
+    # patches and independently spawn an older Spoolman process. Remove the
+    # hook from the baked S98; never erase the OEM recovery data.
+    persist_begin = "# MULTIACE_ENHANCED_PERSIST_BOOT_HOOK_V1"
+    persist_end = "# END MULTIACE_ENHANCED_PERSIST_BOOT_HOOK_V1"
+    if text.count(persist_begin) != 1 or text.count(persist_end) != 1:
+        raise SystemExit("Cannot safely remove legacy OEM MultiACE persistence replay")
+    before, remainder = text.split(persist_begin, 1)
+    _, after = remainder.split(persist_end, 1)
+    text = before + after
+    if "PERSIST_SCRIPT=/oem/multiace_persist/apply.sh" in text:
+        raise SystemExit("Baked firmware still invokes legacy persistence replay")
     original = "export HOME='$HOME_LAVA' USER='$USER' PATH='$PATH_LAVA';"
     updated = "export HOME='$HOME_LAVA' USER='$USER' PATH='$PATH_LAVA' PYTHONPATH='/home/lava/multiace_web/.vendor';"
     web.write_text(replace_exact(text, original, updated, "Enhanced Web dependency environment"))
     web.chmod(0o755)
+
+    # Persist a visible marker in the immutable image. When upgrading a
+    # personalized U1, the operator can use this marker to make the old
+    # /oem/multiace_persist/apply.sh skip replay on integrated firmware
+    # without disabling recovery on the previous working PAXX image.
+    marker = root / "usr/local/share/multiace-enhanced/PAXX20_INTEGRATED_FW"
+    marker.parent.mkdir(parents=True, exist_ok=True)
+    marker.write_text("PAXX20_INTEGRATED_FW=1\n")
 
     # The PAXX 2.0 printer.cfg includes extended/klipper/*.cfg.
     # S49 copies these default templates to persistent printer_data on first boot.
