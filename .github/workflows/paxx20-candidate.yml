@@ -6,6 +6,7 @@ on:
       - release/paxx20-all-in-one
     paths:
       - 'packaging/paxx20/**'
+      - 'firmware/**'
       - '.github/workflows/paxx20-candidate.yml'
   workflow_dispatch:
 
@@ -28,6 +29,17 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: false
+
+      # Fail fast on broken init scripts before spending minutes repacking
+      # a complete USB image. This caught the malformed S58 in run #45.
+      - name: Validate first-boot init and QA shell syntax
+        run: |
+          set -euo pipefail
+          sh -n firmware/init.d/S58multiace-mode
+          sh -n packaging/paxx20/S99spoolman
+          bash -n packaging/paxx20/qa_first_boot.sh
+          bash -n packaging/paxx20/qa_spoolman_smoke.sh
+          echo "First-boot shell syntax validated"
 
       - name: Prepare disk for firmware build
         run: |
