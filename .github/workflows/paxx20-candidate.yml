@@ -99,6 +99,12 @@ jobs:
           ./dev.sh make build PROFILE=extended-enhanced \
             OUTPUT_FILE=firmware/U1_extended-enhanced-DEV-NOT-FOR-PRINTER.bin
 
+      - name: Smoke-test bundled Spoolman HTTP API and restart under ARM64
+        run: |
+          set -euo pipefail
+          bash packaging/paxx20/qa_spoolman_smoke.sh \
+            "$RUNNER_TEMP/sources/paxx/tmp/firmware/rootfs"
+
       - name: Record checksum and size, do NOT publish firmware binary
         if: success()
         run: |
