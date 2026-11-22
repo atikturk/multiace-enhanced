@@ -42,6 +42,36 @@ start() {
     fi
     mkdir -p "$DATA_DIR" "$DATA_DIR/backups" /home/lava/printer_data/logs || return 1
     touch "$LOGFILE" || return 1
+    # Safeguard an existing, user-owned database before this firmware can
+    # migrate its schema. Never include this backup in the .bin image.
+    migration_marker="$DATA_DIR/.enhanced-v0271-first-start"
+    db="$DATA_DIR/spoolman.db"
+    if [ ! -e "$migration_marker" ]; then
+        if [ -s "$db" ]; then
+            snapshot="$DATA_DIR/spoolman.before-enhanced-v0271.db"
+            if [ ! -s "$snapshot" ]; then
+                /usr/bin/python3 - "$db" "$snapshot" <<'PY_SQLITE_BACKUP' || return 1
+import sqlite3
+import sys
+from pathlib import Path
+
+source, target = map(Path, sys.argv[1:])
+with sqlite3.connect(str(source), timeout=20) as live:
+    with sqlite3.connect(str(target), timeout=20) as backup:
+        live.backup(backup)
+        state = backup.execute("PRAGMA integrity_check").fetchone()[0]
+        if state != "ok":
+            raise SystemExit("Existing Spoolman database backup failed: " + str(state))
+print("Spoolman pre-upgrade SQLite backup:", target)
+PY_SQLITE_BACKUP
+            fi
+            if [ ! -s "$snapshot" ]; then
+                echo "$NAME: refusing database migration without verified backup" >&2
+                return 1
+            fi
+        fi
+        touch "$migration_marker" || return 1
+    fi
     chown -R lava:lava "$DATA_DIR" 2>/dev/null || true
     chown lava:lava "$LOGFILE" 2>/dev/null || true
     rm -f "$PIDFILE"
