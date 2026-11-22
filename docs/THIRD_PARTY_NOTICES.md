@@ -19,6 +19,18 @@ The upstream repositories and selected license files were checked on 2026-11-22.
 - Firmware: `U1_2.0.0.205_20260914173503_upgrade.bin`
 - SHA256: `e6269eb0f1d9e8da74173e9da6350a14b18dd2fe5c4e8f2cabc48b0cdaf2aad7`
 
+## Proprietary Snapmaker firmware: separate redistribution permission required
+
+**Important outstanding license gate for the full 332 MB combined firmware image.** Verifying GPL-3.0/MIT licenses for PAXX's integration, multiACE, Spoolman and Vue **does not** authorize copying or distributing Snapmaker's distinct proprietary firmware, GUI and system services.
+
+Snapmaker's official [U1 Terms of Use](https://www.snapmaker.com/terms-of-use) section 6.4.4 identifies these non-open-source components as proprietary and grants a personal, non-transferable license; section 6.4 restricts unauthorized redistribution. The [Snapmaker community team's explanation](https://forum.snapmaker.com/t/u1-custom-firmware-and-toolkit/40500/6) also states that proprietary files must not be included in shared toolkits and discusses distributing proprietary code only with authorization.
+
+The PAXX project publicly distributes modified combined firmware, but that fact **alone does not establish written sublicensing permission for an independent downstream project**. We have not verified written authorization from Snapmaker for this project's independent redistribution of the complete PAXX-based `.bin`.
+
+**Publication consequence:** The GitHub Release containing the complete firmware remains an **unpublished draft pending explicit confirmation** that Snapmaker proprietary components may lawfully be redistributed in this project, either from Snapmaker or from rights holders able to grant such permission. The open-source Enhanced source code and build recipes may remain public under their respective licenses. A safer alternative, absent permission, is publication of open-source patches and build instructions that have individual owners download official firmware themselves without this project distributing proprietary bytes.
+
+This is not a claim that PAXX or any other developer lacks permission. It is an explicit record of what has and has not been verified **for this repo's distribution**.
+
 **Stock firmware / bundled dependencies:** The device base image also contains Snapmaker-supplied and other bundled system components. The original manufacturer terms and component-specific licenses are not replaced by this project's GPL-3.0 license. The upstream PAXX project distributes a combined U1 firmware image; this project retains that packaging approach and its source/build correspondence. Third-party binary-only parts must be used and redistributed in accordance with the relevant manufacturer permissions; this notice is **not** a representation that all non-open-source system components are GPL-licensed.
 
 **No operator secrets included by design:** The integration workflow sources a repository/clean upstream checkout and does not include the developer printer's `/oem` backup archives, private SQLite spool data, NFC tag identifiers, Wi-Fi settings, SSH keys or user printer configuration. Release auditing should include **both the source tree and image**; never ship field backups as extras.
