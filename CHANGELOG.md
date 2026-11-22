@@ -1,8 +1,8 @@
 # Changelog — MultiACE Enhanced (PAXX 2.0)
 
-This file records the first public stable MultiACE Enhanced firmware for Snapmaker U1, built from candidate #49 and accepted on the operator's physical printer in November 2026.
+This file records the hardware-validated stable firmware candidate v2.0.0-enhanced.1 for Snapmaker U1. Its full binary is not publicly distributed pending confirmation of redistribution rights for Snapmaker proprietary components; open-source project files remain public.
 
-## v2.0.0-enhanced.1 — PAXX 2.0 + MultiACE Enhanced (2026-11-22)
+## Pending public release — v2.0.0-enhanced.1 PAXX 2.0 + MultiACE Enhanced (2026-11-22)
 
 Build evidence: [GitHub Actions #49](https://github.com/atikturk/multiace-enhanced/actions/runs/45058047153)
 
