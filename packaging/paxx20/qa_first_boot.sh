@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Offline simulation of two first-boot hooks on an extracted PAXX 2.0
+# ARM64 rootfs. Execute only AFTER the output .bin has already been packed.
+set -euo pipefail
+[[ $# -eq 1 ]] || { echo "Usage: qa_first_boot.sh <rootfs>" >&2; exit 2; }
+ROOTFS="$(realpath "$1")"
+test -x "$ROOTFS/etc/init.d/S49extended-config"
+test -x "$ROOTFS/etc/init.d/S58multiace-mode"
+test -s "$ROOTFS/usr/local/share/firmware-config/extended/ace.cfg"
+test -s "$ROOTFS/usr/local/share/firmware-config/extended/klipper/90_multiace.cfg"
+
+# On real firmware, S48 mounts the persistent printer-data layer first.
+# The QA rootfs has no device mount; mimic its empty mountpoint for S49.
+sudo mkdir -p "$ROOTFS/oem/printer_data" "$ROOTFS/home/lava/printer_data/config"
+STOCK="$ROOTFS/home/lava/klipper/klippy/extras/filament_feed.py"
+ACE="$ROOTFS/home/lava/klipper/klippy/extras/filament_feed_ace.py"
+test -s "$STOCK" && test -s "$ACE"
+baseline="$(sha256sum "$STOCK" | cut -d ' ' -f1)"
+echo "QA: running PAXX S49 defaults seeding"
+sudo chroot "$ROOTFS" /etc/init.d/S49extended-config start
+test -s "$ROOTFS/home/lava/printer_data/config/extended/ace.cfg"
+test -s "$ROOTFS/home/lava/printer_data/config/extended/klipper/90_multiace.cfg"
+test -x "$ROOTFS/home/lava/printer_data/config/extended/multiace/ace_mode_switch.sh"
+grep -qx '\[include ../ace.cfg\]' "$ROOTFS/home/lava/printer_data/config/extended/klipper/90_multiace.cfg"
+grep -q 'spoolman_url: http://127.0.0.1:7912' "$ROOTFS/home/lava/printer_data/config/extended/ace.cfg"
+
+echo "QA: running S58 default ACE activation"
+sudo chroot "$ROOTFS" /etc/init.d/S58multiace-mode start
+backup="$ROOTFS/home/lava/klipper/klippy/extras/filament_feed_pre_multiace.py"
+test -s "$backup"
+test "$(sha256sum "$backup" | cut -d ' ' -f1)" = "$baseline"
+cmp -s "$STOCK" "$ACE"
+test -s "$ROOTFS/home/lava/klipper/klippy/kinematics/extruder_pre_multiace.py"
+echo "QA: original PAXX normal-mode backup verified, ACE active, config persisted."
