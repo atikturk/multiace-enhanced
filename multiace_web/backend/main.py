@@ -6408,6 +6408,34 @@ async def _enhanced_dashboard_telemetry(data):
     if result.get("spool_mode") != "spoolman":
         return result
 
+    local_spoolman = str(result.get("spoolman_url") or "").rstrip("/") in (
+        "http://127.0.0.1:7912", "http://localhost:7912"
+    )
+
+    # Dashboard inventory is INDEPENDENT of whether an ACE RFID card was
+    # explicitly bound to a Spoolman spool. AUTO=0 means no auto-adopt or
+    # consumption sync, not that the existing Spoolman inventory disappears.
+    # Read only: do not change spool bindings, unregistered-tag second lines,
+    # or the user's Spoolman auto-sync preference.
+    if local_spoolman:
+        inventory = await _enhanced_spool_preview_rows()
+        active_count = 0
+        total_g = 0.0
+        for sp in inventory:
+            if not isinstance(sp, dict) or sp.get("archived"):
+                continue
+            active_count += 1
+            try:
+                weight = float(sp.get("remaining_weight"))
+                if math.isfinite(weight):
+                    total_g += max(0.0, weight)
+            except (TypeError, ValueError):
+                pass
+        result["spoolman_inventory"] = {
+            "active_spools": active_count,
+            "remaining_weight": round(total_g, 1),
+        }
+
     if not result.get("spoolman_auto"):
         return result
 
