@@ -11,18 +11,18 @@ test -s "$ROOTFS/usr/local/share/firmware-config/extended/klipper/90_multiace.cf
 
 # On real firmware, S48 mounts the persistent printer-data layer first.
 # The QA rootfs has no device mount; mimic its empty mountpoint for S49.
-sudo mkdir -p "$ROOTFS/oem/printer_data" "$ROOTFS/home/lava/printer_data/config"
+sudo chroot "$ROOTFS" /bin/mkdir -p /oem/printer_data /home/lava/printer_data/config
 STOCK="$ROOTFS/home/lava/klipper/klippy/extras/filament_feed.py"
 ACE="$ROOTFS/home/lava/klipper/klippy/extras/filament_feed_ace.py"
 test -s "$STOCK" && test -s "$ACE"
 baseline="$(sha256sum "$STOCK" | cut -d ' ' -f1)"
 echo "QA: running PAXX S49 defaults seeding"
 sudo chroot "$ROOTFS" /etc/init.d/S49extended-config start
-test -s "$ROOTFS/home/lava/printer_data/config/extended/ace.cfg"
-test -s "$ROOTFS/home/lava/printer_data/config/extended/klipper/90_multiace.cfg"
-test -x "$ROOTFS/home/lava/printer_data/config/extended/multiace/ace_mode_switch.sh"
-grep -qx '\[include ../ace.cfg\]' "$ROOTFS/home/lava/printer_data/config/extended/klipper/90_multiace.cfg"
-grep -q 'spoolman_url: http://127.0.0.1:7912' "$ROOTFS/home/lava/printer_data/config/extended/ace.cfg"
+sudo chroot "$ROOTFS" /bin/test -s /home/lava/printer_data/config/extended/ace.cfg
+sudo chroot "$ROOTFS" /bin/test -s /home/lava/printer_data/config/extended/klipper/90_multiace.cfg
+sudo chroot "$ROOTFS" /bin/test -x /home/lava/printer_data/config/extended/multiace/ace_mode_switch.sh
+sudo chroot "$ROOTFS" /bin/grep -qx '\[include ../ace.cfg\]' /home/lava/printer_data/config/extended/klipper/90_multiace.cfg
+sudo chroot "$ROOTFS" /bin/grep -q 'spoolman_url: http://127.0.0.1:7912' /home/lava/printer_data/config/extended/ace.cfg
 
 echo "QA: running S58 default ACE activation"
 sudo chroot "$ROOTFS" /etc/init.d/S58multiace-mode start
