@@ -29,7 +29,7 @@ The development notes record the changes as:
 | `DRIP_SEGMENT_TIME` | 0.050 | 0.100 |
 | `DRIP_TIME` | 0.100 | 0.350 |
 
-The current source values above are verifiable in this repository. **The previous values come from development notes; a canonical stock/PAXX baseline diff has not yet been published.** Do not assume these values differ from any specific later PAXX or Snapmaker firmware without checking that firmware's source.
+**Verified PAXX 2.0 source comparison (2026-11-22):** In GitHub Actions run [#44983842996](https://github.com/atikturk/multiace-enhanced/actions/runs/44983842996), the pinned PAXX `v2.0.0-paxx12-24` firmware builder extracted its actual post-overlay `toolhead.py` from the stock U1 firmware rootfs *before* the Enhanced overlay. That baseline contains `DRIP_SEGMENT_TIME = 0.050` and `DRIP_TIME = 0.100`. The working Enhanced snapshot contains `0.100` and `0.350`, respectively. The complete comparison changes **exactly two lines** (13-line unified diff), with no unrelated differences in `toolhead.py`. See [the verified TTC patch](patches/TTC_PAXX20_toolhead.patch). Base SHA256: `e8db5208b790d6d87a14b728384a261209db029be289e52adbadf7befa4b7c30`; Enhanced SHA256: `0924216d1a7039ce72ef3ab9d9e4fd4fc3e500ee2989624fa8c4ae600a4c24c2`. These results establish the source difference but do **not** prove that it is universally safe or independently causal.
 
 ## Validation and limitations
 
@@ -39,9 +39,9 @@ An earlier experiment using a dedicated MCU homing command queue in `mcu.py` did
 
 ## How upstream maintainers can review this
 
-1. Determine the exact Klipper `toolhead.py` shipped with the relevant stock Snapmaker / PAXX firmware baseline.
-2. Compare its DRIP timing values and homing/probing logic against the Enhanced snapshot, not against an unrelated upstream multiACE file.
-3. Review whether the timing adjustment is suitable for that platform, and test repeatability on hardware.
+1. Review the [verified 2-line TTC patch](patches/TTC_PAXX20_toolhead.patch) against the pinned PAXX 2.0 post-overlay `toolhead.py` baseline, not an unrelated upstream multiACE file.
+2. Confirm whether both changed timing values are appropriate for the U1 and whether any PAXX/platform timing assumptions need adjustment.
+3. Repeat Z homing/probing and actual prints on the target firmware/hardware; the 2026-11-22 comparison is source-level only.
 4. Keep the TTC / MCU timing issue separate from Auto Replenish, tool-change behavior, and the decay71 `multiACE` code lineage.
 
-**Status:** documented field-tested Enhanced change; upstream-specific source diff and physical validation for any newly built firmware remain pending.
+**Status:** 2-line patch against the pinned PAXX 2.0 firmware baseline **source-verified**. Physical testing of any new combined firmware build, independent causality, and maintainer acceptance remain pending.
