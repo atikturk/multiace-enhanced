@@ -27,6 +27,9 @@ grep -q 'state.spoolman_inventory?.remaining_weight' "$ROOTFS/home/lava/multiace
 grep -Fq 'spoolman_inventory: null,' "$ROOTFS/home/lava/multiace_web/frontend/app.js"
 grep -Fq 'state.spoolman_inventory = (' "$ROOTFS/home/lava/multiace_web/frontend/app.js"
 echo "QA: read-only Spoolman inventory summary mapped into Vue state"
+# Execute the packaged dashboard preview with AUTO=0 against offline RFID
+# fixtures; verify 4 unique spool weights and zero data/binding mutation.
+python3 packaging/paxx20/qa_rfid_weight_preview.py "$ROOTFS/home/lava/multiace_web/backend/main.py"
 # This hardware-proven Auto Replenish fix must not regress during repack.
 LIVE_EXTRAS="$ROOTFS/home/lava/klipper/klippy/extras"
 sha_feed='15d714577aca6c123b726e63df94bb07dc61ec4e9b2e55da2019bf4ff78d4f8c'
