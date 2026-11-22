@@ -38,8 +38,10 @@ Firmware SHA256: `b3fb88cea6a4c9480ec23ad734886ab2cd029ece04f1efb53af62f88035828
 - On #47 plus hotfixes, 30 active and five archived Spoolman rows were
   preserved; 17,460.9 g active inventory and four RFID-matched slot weights
   were displayed correctly with `spoolman_auto=False`.
-- **#49 itself has not yet undergone a physical installation and cold-boot
-  acceptance test.** It must pass before a public firmware pre-release.
+- **#49 was physically installed on the development Snapmaker U1 after a
+  cleaned PAXX 1.6 baseline.** The operator reported that everything is in place.
+  Two #49 cold boots and granular UI/API evidence remain to be recorded before
+  public stable publication. See the [field record](docs/VALIDATION_20261122_BUILD49.md).
 - In-print runout, TTC under load, fresh-device installation and rollback
   acceptance require separate truthful evidence. Do not label them as passed
   merely because code hashes or emulated QA checks passed.
