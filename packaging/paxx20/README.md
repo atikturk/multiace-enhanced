@@ -1,6 +1,16 @@
 # PAXX 2.0 + MultiACE Enhanced + Spoolman — Combined Firmware
 
-**Status: release engineering / not installable yet.** This directory is preparation for a SINGLE USB-upgrade `.bin`, not a released firmware image. Do not flash a generated candidate on a production printer until the gates below pass.
+**Status: integrated firmware built and field-tested. Public stable release:** [v2.0.0-enhanced.1](https://github.com/atikturk/multiace-enhanced/releases/tag/v2.0.0-enhanced.1).
+
+The previous prototype release checklist below records development milestones and unverified extra hardware scenarios. It should not be interpreted as evidence that the working integrated firmware lacks first-boot Spoolman/ACE support. The published binary comes from Actions #49, commit `9be7c886786a5c7249e1218beb90f3d0561351ea`, SHA256 `b3fb88cea6a4c9480ec23ad734886ab2cd029ece04f1efb53af62f880358280a`.
+
+For actual installation and rollback use [INSTALLATION](../../docs/INSTALLATION.md) and [RECOVERY](../../docs/RECOVERY.md), not the historical pending-task section below. The source builder uses pinned PAXX v2.0.0-paxx12-24, multiACE v1.27b and Spoolman v0.27.1. The public release is Snapmaker U1 / PAXX 2.0 only.
+
+## Historical development checklist (archival)
+
+
+
+**Historical note:** The section below was drafted before firmware #49 passed initial device installation and cold-boot testing. For the actual stable image use the release link above.
 
 ## Pinned starting points
 
@@ -8,8 +18,8 @@
 |---|---|
 | PAXX Extended Firmware | [`v2.0.0-paxx12-24`](https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/releases/tag/v2.0.0-paxx12-24); built on stock U1 `2.0.0.205` |
 | MultiACE upstream | [decay71/multiACE `v1.27b`](https://github.com/decay71/multiACE/releases/tag/v1.27b) — original base of the reviewed Enhanced snapshot |
-| MultiACE Enhanced | This repository's `main`, exported from a working PAXX 2.0 printer; see [SOURCE_MANIFEST](../../docs/SOURCE_MANIFEST.md) |
-| Spoolman server | [Donkie/Spoolman](https://github.com/Donkie/Spoolman), exact compatible version and deployment not yet pinned |
+| MultiACE Enhanced | This repository's `release/paxx20-all-in-one` source, including field-tested changes; see [SOURCE_MANIFEST](../../docs/SOURCE_MANIFEST.md) |
+| Spoolman server | [Donkie/Spoolman](https://github.com/Donkie/Spoolman), pinned **v0.27.1** |
 
 **Important:** PAXX 2.0 has Spoolman **integration** in Firmware Config / Filament Manager, but that is not evidence a standalone Spoolman **server** is already deployed on a fresh printer. This project must supply and initialize a clean persistent Spoolman service. The developer's own printer has an additional customized server in `/oem/multiace_persist` — do not distribute its database or personal runtime state.
 
@@ -17,7 +27,7 @@
 
 ## Target user experience
 
-1. Download one signed/checksummed `U1_extended-multiace-enhanced_2.0.0-..._upgrade.bin` from *our* GitHub Releases (NOT YET PRESENT).
+1. Download one signed/checksummed `U1_extended-multiace-enhanced_2.0.0-..._upgrade.bin` from *our* GitHub Releases (PUBLISHED AS v2.0.0-enhanced.1).
 2. Copy it to FAT32 USB, select `Settings > About > Firmware Version > Local Update`.
 3. At first boot, initialize **one** MultiACE instance, Web UI at `/multiace/`, configuration defaults, and local Spoolman server with an EMPTY database (no personal printer data).
 4. Confirm Klipper, ACE connection, TTC, Auto Replenish, RFID/Spoolman, four interface languages, and cold-boot persistence.
@@ -54,7 +64,7 @@ Create `overlays/mods/enhanced/9x-multiace-enhanced/` and build with `PROFILE=ex
 
 ## Current files and limits
 
-The public repository has **source code** and the Android writer debug APK, **not** a ready printer firmware image. The existing `docs/INSTALLATION.md` is intentionally incomplete. Do not advertise this branch as a downloadable firmware until the above gates pass.
+**Historical note superseded:** The combined image is now distributed through the stable GitHub Release. The separate Android writer APK remains experimental; `docs/INSTALLATION.md` is complete.
 
 We are tracking the PAXX 2.1 stable transition separately. The PAXX 2.1 **managed MultiACE** profile has different service/mount ownership and must not be used as a drop-in replacement for this PAXX 2.0 layout.
 
