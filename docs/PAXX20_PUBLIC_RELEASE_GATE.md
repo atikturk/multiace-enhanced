@@ -30,6 +30,18 @@ The tracked firmware builder remains [`paxx20-candidate.yml`](../.github/workflo
 
 Before flashing, keep a **verified current recovery archive** (including operator-selected configuration and SQLite backup) in a location not replaced by firmware, and confirm the printer is idle. Keep the existing working firmware and rollback method available. Verify the downloaded `.bin` against the SHA256 above.
 
+**Overlay caveat on the development printer:** prior hotfixes were written to
+`/home/lava/multiace_web/backend/main.py`,
+`/home/lava/multiace_web/frontend/app.js` and
+`/home/lava/spoolman/client/dist/` while `/oem/overlay/upper` was active.
+If PAXX preserves this upper layer across flash, these old files may **mask
+the #49 squashfs versions** even after firmware installation. Before claiming
+the integrated image was tested, inspect the matching paths in
+`/oem/overlay/upper/`, preserve backups outside that upper layer, and only
+then test the native #49 files. Do **not** delete the whole overlay or the
+persistent Spoolman database; isolate only verified hotfix overrides as a
+controlled procedure.
+
 After flashing #49, **without applying prior hotfix commands**, inspect the following:
 
 - [ ] Firmware boots into multiACE mode from current configuration; Klipper/Moonraker/Enhanced Web and local Spoolman are all up.
