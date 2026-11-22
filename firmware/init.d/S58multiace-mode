@@ -34,34 +34,11 @@ start() {
         logger -t multiace-mode "initialized missing ace__mode=multi before Klipper startup"
     fi
     # PAXX 1.6 -> Enhanced upgrades retain ace.cfg if it already exists.
-    # The new S49 template's URL will not replace an older blank setting.
-    # Default to the bundled local server only when no explicit spool
-    # preference exists. Never overwrite a custom URL or local/spoollink.
+    # The new S49 template's Spoolman URL does not replace an old blank URL.
+    # Never overwrite an explicit custom server or local/spoollink mode.
     ACE_CFG=/home/lava/printer_data/config/extended/ace.cfg
     if [ -f "$ACE_CFG" ] &&
-       grep -Eq '^spoolman_url:[[:space:]]*
-        multi|single|head)
-            logger -t multiace-mode "applying mode swap: $mode -> ace"
-            bash "$SWITCH_SCRIPT" ace >/dev/null 2>&1 \
-                && logger -t multiace-mode "swap ok" \
-                || logger -t multiace-mode "swap returned non-zero (continuing)"
-            ;;
-        normal|"")
-            logger -t multiace-mode "mode=$mode - leaving stock Klipper modules in place"
-            ;;
-        *)
-            logger -t multiace-mode "unknown mode '$mode' - leaving as-is"
-            ;;
-    esac
-}
-case "$1" in
-    start|"")    start ;;
-    stop)        ;;
-    restart)     start ;;
-    *)           echo "Usage: $0 {start|stop|restart}"; exit 1 ;;
-esac
-exit 0
- "$ACE_CFG"; then
+       grep -Eq '^spoolman_url:[[:space:]]*$' "$ACE_CFG"; then
         spool_mode="$(sed -n 's/^spool_mode:[[:space:]]*//p' "$ACE_CFG" | head -1)"
         case "$spool_mode" in
             ""|spoolman)
