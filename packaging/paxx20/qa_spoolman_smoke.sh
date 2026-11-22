@@ -48,5 +48,10 @@ print("Persistent first-run SQLite database:",p)
 echo "QA: service restart and persisted inventory"
 sudo chroot "$ROOTFS" /etc/init.d/S99spoolman stop
 sudo chroot "$ROOTFS" /etc/init.d/S99spoolman start
-check_health
+if ! check_health; then
+  echo "==== Spoolman post-restart logs ====" >&2
+  sudo chroot "$ROOTFS" /bin/sh -c \
+    'cat /home/lava/printer_data/logs/spoolman-enhanced.log 2>/dev/null || true' >&2
+  exit 1
+fi
 echo "QA: Spoolman standalone service, API, empty inventory and restart passed."
