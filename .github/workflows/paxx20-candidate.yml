@@ -59,6 +59,15 @@ jobs:
           git -C "$RUNNER_TEMP/sources/multiace" rev-parse HEAD
           git -C "$RUNNER_TEMP/sources/spoolman" rev-parse HEAD
 
+      - name: Build pinned Spoolman Svelte Web client for offline firmware
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/sources/spoolman/client_v2"
+          node --version
+          npm ci
+          npm run build
+          test -s build/200.html
+
       - name: Prepare source-only firmware overlay
         run: |
           set -euo pipefail
@@ -68,6 +77,9 @@ jobs:
             --multiace "$RUNNER_TEMP/sources/multiace" \
             --spoolman "$RUNNER_TEMP/sources/spoolman" \
             --out "$RUNNER_TEMP/enhanced-overlay"
+          python3 packaging/paxx20/finalize_overlay.py \
+            --out "$RUNNER_TEMP/enhanced-overlay" \
+            --repo "$GITHUB_WORKSPACE"
           cp -a "$RUNNER_TEMP/enhanced-overlay/overlays/mods/enhanced" \
                 "$RUNNER_TEMP/sources/paxx/overlays/mods/enhanced"
           test -f "$RUNNER_TEMP/enhanced-overlay/NOT_FLASHABLE.txt"
@@ -90,7 +102,13 @@ jobs:
           sha256sum "$f" > "$RUNNER_TEMP/candidate-report/sha256.txt"
           wc -c "$f" > "$RUNNER_TEMP/candidate-report/size.txt"
           cp "$RUNNER_TEMP/enhanced-overlay/STAGING_MANIFEST.json" "$RUNNER_TEMP/candidate-report/"
-          printf '%s\n' 'NOT A RELEASE: no first-boot Spoolman setup, no clean-install test, no physical ACE testing.' > "$RUNNER_TEMP/candidate-report/NOT_FLASHABLE.txt"
+          cp "$RUNNER_TEMP/sources/paxx/tmp/firmware/TTC_COMPARISON.json" "$RUNNER_TEMP/candidate-report/"
+          cp "$RUNNER_TEMP/sources/paxx/tmp/firmware/TTC_DIFF.patch" "$RUNNER_TEMP/candidate-report/"
+          test -s "$RUNNER_TEMP/sources/paxx/tmp/firmware/rootfs/etc/init.d/S99spoolman"
+          test -f "$RUNNER_TEMP/sources/paxx/tmp/firmware/rootfs/home/lava/spoolman/.vendor/uvicorn/__init__.py"
+          test -f "$RUNNER_TEMP/sources/paxx/tmp/firmware/rootfs/home/lava/multiace_web/.vendor/uvicorn/__init__.py"
+          test -f "$RUNNER_TEMP/sources/paxx/tmp/firmware/rootfs/usr/local/share/firmware-config/extended/klipper/90_multiace.cfg"
+          printf '%s\n' 'NOT A RELEASE: Spoolman service and ARM64 dependencies are now bundled; real clean-install, physical ACE, cold-boot and rollback tests remain mandatory.' > "$RUNNER_TEMP/candidate-report/NOT_FLASHABLE.txt"
           cat "$RUNNER_TEMP/candidate-report/sha256.txt"
           # Firmware was written by PAXX Docker build as root; runner cannot unlink it.
           # Keep the report, but remove the unvalidated test binary using sudo.
