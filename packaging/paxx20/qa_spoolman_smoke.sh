@@ -31,7 +31,14 @@ check_health() {
 }
 echo "QA: first-boot Spoolman service launch under ARM64 chroot"
 sudo chroot "$ROOTFS" /etc/init.d/S99spoolman start
-check_health
+if ! check_health; then
+  echo "==== Embedded Spoolman startup logs ====" >&2
+  sudo chroot "$ROOTFS" /bin/sh -c \
+    'cat /home/lava/printer_data/logs/spoolman-enhanced.log 2>/dev/null || true;
+     cat /home/lava/printer_data/spoolman/spoolman.log 2>/dev/null || true' >&2
+  sudo chroot "$ROOTFS" /etc/init.d/S99spoolman status >&2 || true
+  exit 1
+fi
 sudo chroot "$ROOTFS" /usr/bin/python3 -c '
 from pathlib import Path
 p=Path("/home/lava/printer_data/spoolman/spoolman.db")
