@@ -39,9 +39,16 @@ Firmware SHA256: `b3fb88cea6a4c9480ec23ad734886ab2cd029ece04f1efb53af62f88035828
   preserved; 17,460.9 g active inventory and four RFID-matched slot weights
   were displayed correctly with `spoolman_auto=False`.
 - **#49 was physically installed on the development Snapmaker U1 after a
-  cleaned PAXX 1.6 baseline.** The operator reported that everything is in place.
-  Two #49 cold boots and granular UI/API evidence remain to be recorded before
-  public stable publication. See the [field record](docs/VALIDATION_20261122_BUILD49.md).
+  cleaned PAXX 1.6 baseline.** The operator reported full functionality and
+  two successful cold boots. A stale T2 physical filament initially had no
+  source mapping after the deliberate baseline cleanup; physical unload/reload
+  from ACE 1 slot 2 restored both the source association and the SVG link,
+  and the new association survived the subsequent reported cold boot.
+  Four RFID slot weights and Spoolman IDs are verified by UI screenshot.
+  See the [field record](docs/VALIDATION_20261122_BUILD49.md).
+- The stable Release remains **a draft**, pending complete source/license,
+  private-data and rollback verification. Do not confuse passing these field
+  tests with a demonstrated in-print runout/physical TTC stress test.
 - In-print runout, TTC under load, fresh-device installation and rollback
   acceptance require separate truthful evidence. Do not label them as passed
   merely because code hashes or emulated QA checks passed.
