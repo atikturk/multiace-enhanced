@@ -71,6 +71,21 @@ def main() -> None:
     add(repo / "packaging/paxx20/99-install-embedded-deps.sh",
         stage / "scripts/99-install-embedded-deps.sh", executable=True)
 
+    # Preserve the PAXX baseline for normal-mode/rollback. The working
+    # printer snapshot has ACE mode's copies in these un-suffixed paths;
+    # including them would corrupt the S58 first-boot stock backups.
+    for active, ace_name in (
+        ("filament_feed.py", "filament_feed_ace.py"),
+        ("filament_switch_sensor.py", "filament_switch_sensor_ace.py"),
+    ):
+        klippy = root / "home/lava/klipper/klippy/extras"
+        live, ace = klippy / active, klippy / ace_name
+        if not live.is_file() or not ace.is_file():
+            raise SystemExit("Missing ACE/normal mode pair: " + active)
+        if live.read_bytes() != ace.read_bytes():
+            raise SystemExit("Cannot safely drop live snapshot copy: " + active)
+        live.unlink()
+
     # These are imported by uvicorn at startup. No npm or pip on the printer.
     client = root / "home/lava/spoolman/client_v2/build/200.html"
     if not client.is_file():
