@@ -7,10 +7,12 @@ on:
     paths:
       - 'packaging/paxx20/**'
       - '.github/workflows/paxx20-candidate.yml'
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
+
+# One candidate build per change, not duplicate push + draft-PR builds.
+concurrency:
+  group: paxx20-enhanced-candidate
+  cancel-in-progress: true
 
 permissions:
   contents: read
