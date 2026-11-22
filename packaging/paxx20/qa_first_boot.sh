@@ -49,8 +49,17 @@ VARS="/home/lava/printer_data/config/extended/multiace/ace_vars.cfg"
 if [ -e "$ROOTFS$VARS" ]; then
     sudo chroot "$ROOTFS" /bin/sed -i '/^ace__mode *=/d' "$VARS"
 fi
-echo "QA: running S58 with missing mode record"
+# Legacy PAXX upgrades can retain an empty Spoolman URL even when
+# the new firmware's seed template correctly sets it.
+sudo chroot "$ROOTFS" /bin/sed -i \
+  's|^spoolman_url: http://127.0.0.1:7912$|spoolman_url:|' \
+  /home/lava/printer_data/config/extended/ace.cfg
+echo "QA: running S58 with missing mode and legacy blank Spoolman URL"
 sudo chroot "$ROOTFS" /etc/init.d/S58multiace-mode start
+sudo chroot "$ROOTFS" /bin/grep -qx \
+  'spoolman_url: http://127.0.0.1:7912' \
+  /home/lava/printer_data/config/extended/ace.cfg
+echo "QA: legacy blank Spoolman URL configured"
 sudo chroot "$ROOTFS" /bin/grep -qx "ace__mode = 'multi'" "$VARS"
 echo "QA: missing ace__mode seeded successfully"
 backup="$ROOTFS/home/lava/klipper/klippy/extras/filament_feed_pre_multiace.py"
