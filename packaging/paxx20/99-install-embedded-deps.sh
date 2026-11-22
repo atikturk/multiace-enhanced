@@ -31,6 +31,10 @@ echo ">> Verifying Enhanced backend imports from private directory"
 chroot_firmware.sh "$ROOTFS_DIR" /bin/sh -c \
   "PYTHONPATH=$WEB/.vendor /usr/bin/python3 -c 'import fastapi,uvicorn,httpx,pydantic,websockets,multipart,serial;print(fastapi.__file__,websockets.__file__)'"
 
+echo ">> Verifying complete Enhanced Web app import under ARM64"
+chroot_firmware.sh "$ROOTFS_DIR" /bin/sh -c \
+  "cd $WEB/backend && PYTHONPATH=$WEB/.vendor /usr/bin/python3 -c 'from main import app;print(app.title)'"
+
 echo ">> Verifying bundled Spoolman app imports with its built Svelte client"
 chroot_firmware.sh "$ROOTFS_DIR" /bin/sh -c \
   "cd $SPOOL && PYTHONPATH=$SPOOL/.vendor SPOOLMAN_DIR_DATA=/tmp/spoolman-build-import \
