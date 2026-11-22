@@ -25,6 +25,44 @@ offline and physical results.
 Passing these shows *software integration in an emulated rootfs*, NOT that
 flashing or ACE operations are safe on the user's hardware.
 
+## Known conflict when upgrading the existing Enhanced development U1
+
+**2026-11-22 finding:** the user's device has an OEM
+`/oem/multiace_persist/apply.sh` and an existing S98 Web start script
+with `MULTIACE_ENHANCED_PERSIST_BOOT_HOOK_V1`. The old replay script
+restores legacy files, calls `restore_auto_replenish_paxx16.sh`, and
+conditionally spawns Spoolman from the old OEM application directory.
+**The previous successful run #44985514932 was built before this conflict
+was removed and must NOT be installed over that existing device.**
+
+The new builder's `finalize_overlay.py` removes *both* old replay and
+delayed Spoolman hooks from baked S98. The QA gate verifies their absence
+and the presence of the baked
+`/usr/local/share/multiace-enhanced/PAXX20_INTEGRATED_FW` marker.
+
+However, a device's surviving `/oem/.debug` overlay can shadow
+`/etc/init.d/S98multiace-web` and `S99spoolman` with older copies.
+The built-in marker deliberately does *not* delete or overwrite any OEM
+recovery or SQLite data. Before flashing the test U1, inspect:
+
+```sh
+ls -ld /oem/.debug /oem/overlay/upper 2>&1
+mount | grep -E 'overlay| /oem | /userdata '
+for s in S57multiace-tools S58multiace-mode S98multiace-web S99spoolman; do
+  ls -l "/etc/init.d/$s" "/oem/overlay/upper/etc/init.d/$s" 2>&1
+done
+sed -n '1,35p' /oem/multiace_persist/apply.sh
+```
+
+Do not blindly delete `/oem/.debug`, remove `apply.sh`, wipe
+`/oem/multiace_persist`, or overwrite a working database. The
+physical upgrade migration must account for overlay precedence and keep
+an off-printer copy of the verified recovery archive. Where an existing
+S98 is retained, an explicitly version-gated *no-op* for the old
+`apply.sh` on the integrated firmware is required; on the old firmware
+that replay must still work. Review the exact old script header before
+creating the guard, then do a controlled boot with logs.
+
 ## Physical acceptance (operator required, never automated)
 
 **Before touching a printer:** retain a known-good PAXX 2.0 .bin and an
