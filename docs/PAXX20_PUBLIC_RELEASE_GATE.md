@@ -5,7 +5,7 @@
 **Last updated:** 2026-11-22.  
 **Current candidate:** [GitHub Actions #49](https://github.com/atikturk/multiace-enhanced/actions/runs/45058047153), commit `9be7c886786a5c7249e1218beb90f3d0561351ea`.  
 **Candidate image SHA256:** `b3fb88cea6a4c9480ec23ad734886ab2cd029ece04f1efb53af62f880358280a`.  
-**Status:** **Unpublished stable draft**. The actual #49 firmware has been installed on a Snapmaker U1 from a cleaned PAXX 1.6 baseline; the operator reports that everything is in place. This establishes initial on-device acceptance, but two cold boots, detailed post-install evidence and publication audit remain. See [2026-11-22 hardware acceptance record](VALIDATION_20261122_BUILD49.md).
+**Status:** **Unpublished stable draft**. The actual #49 firmware has been installed on a Snapmaker U1 from a cleaned PAXX 1.6 baseline; the operator reports that everything is in place. This establishes initial on-device acceptance, and two cold-boot checks were reported successful, including re-establishing/persisting a clean T2 source association. Detailed security, license, clean-device and rollback publication gates remain. See [2026-11-22 hardware acceptance record](VALIDATION_20261122_BUILD49.md).
 
 ## Goal and scope
 
@@ -24,7 +24,8 @@ The tracked firmware builder remains [`paxx20-candidate.yml`](../.github/workflo
 - [x] Unique RFID-to-Spoolman **display-only** matching on slots #34, #29, #35 and #36 verified on development hardware with `spoolman_auto=False`. Corresponding offline regression QA added in #49.
 - [x] TTC code values and Auto Replenish source snapshot hashes compared against the validated hardware files.
 - [x] A previous #47 image was physically installed; cold boot worked after in-place frontend fixes.
-- [x] Integrated #49 image installed from cleaned PAXX 1.6 on development Snapmaker U1; operator reported successful overall operation on 2026-11-22 (granular checks not yet documented).
+- [x] Integrated #49 image installed from cleaned PAXX 1.6 on development Snapmaker U1; operator reported successful operation on 2026-11-22. Four RFID slot grams documented in screenshot.
+- [x] Operator reported two successful #49 cold boots, including a second boot after normal T2 unload/reload restored its saved ACE source and black wiring connector (see [hardware field record](VALIDATION_20261122_BUILD49.md)).
 - [x] Upstream acknowledgements for PAXX, decay71 and donkie appear in README and CREDITS.md.
 
 ## Immediate acceptance: flash **the actual #49 binary** on the test U1
@@ -49,9 +50,9 @@ After flashing #49, **without applying prior hotfix commands**, inspect the foll
 - [ ] **Fresh #49 build itself** serves the **classic** Spoolman UI at `:7912/`, without “Missing API URL”. Check UI and API, not API alone.
 - [ ] Spoolman retains existing DB on this upgrade: 30 active and 5 archived rows. A *clean* first boot must start with **empty** DB; do not use personal production data for testing this.
 - [ ] MultiACE UI shows the correct inventory total from `spoolman_inventory`, not 0 g.
-- [ ] Four RFID slots show exact unique matched Spoolman IDs **and** remaining grams/progress bars with `spoolman_auto=False`; unmatched RFID tags must remain unmatched, and no undesired second-row data must appear.
+- [x] Four RFID slots show exact unique matched Spoolman IDs **and** remaining grams/progress bars with `spoolman_auto=False`, verified in the on-device screenshot; separate unmatched-tag validation remains to be repeated on #49.
 - [ ] ACE preload/load/unload and toolhead status function correctly; no duplicated services or port conflicts.
-- [ ] Shut down/start the printer **twice** (cold boot), recheck UI, API, mode, spool data and four slot grams, and confirm no persistence replay overwrites the integrated package.
+- [x] Shut down/start the printer **twice** (cold boot): the operator reported both successful. The second followed fresh ACE1 slot2 → T2 loading with correctly saved mapping; an API transcript from after the second boot remains useful for archival evidence.
 - [ ] Restore/rollback path is verified and documented. Physical in-print runout and TTC-under-load tests are logged as **tested** or **not tested** accurately; never infer physical performance from QA alone.
 
 Record build commit, firmware SHA256, device firmware version, test date, firmware installation path, screenshots, results and any unresolved issues in a release-validation note.
