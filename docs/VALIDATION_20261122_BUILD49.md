@@ -32,11 +32,9 @@ device operator**, not solely CI/emulation.
 
 ## What is not individually documented yet
 
-- [ ] Two distinct power-off/power-on **cold boots** on #49 with persistence
-  verified for UI, services, actual API and Spoolman configuration.
-- [ ] Post-#49 console output or screenshots establishing exact four slot
-  gram values and Spoolman archive/active spool counts. The operator reported
-  overall successful operation, but no granular #49 measurements were pasted.
+- [x] Operator reports **one cold boot** of #49 on 2026-11-22 with no general operational problems; second cold boot and service/API persistence checks remain open.
+- [x] Post-cold-boot Enhanced Web screenshot confirms Spoolman slot IDs #34, #29, #35, #36 and remaining gram values 1000 g, 526 g, 1000 g, 1000 g, respectively. The screenshot does not confirm total active/archive counts.
+- [ ] **Open issue:** T2 is physically loaded but displays **unknown source**, and the previously visible colored ACE-to-toolhead SVG connector is absent. Diagnose whether backend `ace.head_source` has been lost across boot versus an incorrect reactive wiring update. Do not infer a physical connection solely from spool colors.
 - [ ] Verification that all previously used hotfix overlay paths remain absent
   on installed #49, demonstrating the image is running its own files.
 - [ ] Fresh installation with completely empty persistent printer data on a
