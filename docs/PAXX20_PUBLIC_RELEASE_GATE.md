@@ -1,7 +1,7 @@
 # PAXX 2.0 + MultiACE Enhanced — Public firmware release gate
 
 **Release target:** Public GitHub Release of a single Snapmaker U1 PAXX 2.0 + MultiACE Enhanced + local Spoolman firmware `.bin`.  
-**Release channel:** Public **pre-release / beta** after hardware acceptance; stable release only with a broader clean-install and regression record.  
+**Release channel:** Public **stable** release after the integrated image passes hardware acceptance, reproducible checks, rollback documentation and the redistribution/license gate. No beta publication is planned.  
 **Last updated:** 2026-11-22.  
 **Current candidate:** [GitHub Actions #49](https://github.com/atikturk/multiace-enhanced/actions/runs/45058047153), commit `9be7c886786a5c7249e1218beb90f3d0561351ea`.  
 **Candidate image SHA256:** `b3fb88cea6a4c9480ec23ad734886ab2cd029ece04f1efb53af62f880358280a`.  
@@ -61,8 +61,8 @@ Record build commit, firmware SHA256, device firmware version, test date, firmwa
 - [ ] Check licensing and distribution permissions of **every bundled component** (PAXX and multiACE GPL-3.0; Spoolman MIT; any bundled platform/stock binary components need a separate redistribution review). Preserve upstream notices and offer corresponding source and build scripts together with distributed binaries.
 - [ ] Update README and installation/recovery docs from historical “source-review only” statements to a precise, truthful **Snapmaker U1 / PAXX 2.0** compatibility description, preserving PAXX/decay71/donkie credits.
 - [ ] Freeze a versioned source commit and image hash; build or attach a publicly accessible, long-retention firmware `.bin` to **GitHub Releases**, **not** a short-lived 3-day Actions artifact.
-- [ ] Publish the public beta/pre-release notes with test matrix, limitations, upgrade/clean-install guidance, rollback steps, SHA256 and links to corresponding source/licenses.
-- [ ] Only promote beta to stable after the remaining clean-device and physical regression gates pass.
+- [ ] Publish the stable release notes with test matrix, limitations, upgrade/clean-install guidance, rollback steps, SHA256 and links to corresponding source/licenses.
+- [ ] Publish directly as a stable GitHub Release **only after** the native #49 image has passed real-device upgrade/first-boot/cold-boot checks and release/legal/security gates have been documented.
 
 ## Important distinctions
 
