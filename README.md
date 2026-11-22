@@ -1,6 +1,6 @@
 # MultiACE Enhanced — Snapmaker U1
 
-**Public stable firmware:** [v2.0.0-enhanced.1](https://github.com/atikturk/multiace-enhanced/releases/tag/v2.0.0-enhanced.1)  
+**Hardware-validated stable release candidate:** v2.0.0-enhanced.1 — **full binary distribution not yet public**, pending proprietary firmware licensing clarification.  
 **Target:** Snapmaker U1 • PAXX **2.0** (based on `v2.0.0-paxx12-24`) • multiACE Enhanced based on decay71 `v1.27b` • bundled Spoolman `v0.27.1`.
 
 A self-contained, community-built **USB-upgrade firmware** integrating PAXX Extended Firmware, MultiACE Enhanced Web, RFID/Spoolman and additional print/filament features. The same integration is tracked in this open-source repository.
@@ -20,7 +20,7 @@ SHA256 of the first stable firmware binary:
 b3fb88cea6a4c9480ec23ad734886ab2cd029ece04f1efb53af62f880358280a
 ```
 
-Download, verify checksum, copy the `.bin` to a FAT32 USB drive and use the Snapmaker U1 touchscreen **Settings → About → Firmware Version → Local Update**. **No additional post-flash SSH installation is intended.**
+After redistribution permission is resolved and a public binary is published: download, verify checksum, copy the `.bin` to a FAT32 USB drive and use the Snapmaker U1 touchscreen **Settings → About → Firmware Version → Local Update**. **No additional post-flash SSH installation is intended.**
 
 - [Complete installation and preflight](docs/INSTALLATION.md)
 - [Rollback, printer configuration and Spoolman database recovery](docs/RECOVERY.md)
