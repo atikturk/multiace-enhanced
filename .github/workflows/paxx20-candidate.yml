@@ -118,6 +118,12 @@ jobs:
           set -euo pipefail
           f="$RUNNER_TEMP/sources/paxx/firmware/U1_extended-enhanced-DEV-NOT-FOR-PRINTER.bin"
           test -s "$f"
+          rootfs="$RUNNER_TEMP/sources/paxx/tmp/firmware/rk-unpacked/rootfs.img"
+          test -s "$rootfs"
+          max_rootfs_bytes=$((614400 * 512))
+          actual_rootfs_bytes="$(stat -c '%s' "$rootfs")"
+          printf 'rootfs bytes: %s / %s partition limit\n' "$actual_rootfs_bytes" "$max_rootfs_bytes"
+          test "$actual_rootfs_bytes" -le "$max_rootfs_bytes"
           mkdir -p "$RUNNER_TEMP/candidate-report"
           sha256sum "$f" > "$RUNNER_TEMP/candidate-report/sha256.txt"
           wc -c "$f" > "$RUNNER_TEMP/candidate-report/size.txt"
@@ -131,14 +137,28 @@ jobs:
           test -f "$RUNNER_TEMP/sources/paxx/tmp/firmware/rootfs/usr/local/share/firmware-config/extended/klipper/90_multiace.cfg"
           printf '%s\n' 'NOT A RELEASE: Spoolman service and ARM64 dependencies are now bundled; real clean-install, physical ACE, cold-boot and rollback tests remain mandatory.' > "$RUNNER_TEMP/candidate-report/NOT_FLASHABLE.txt"
           cat "$RUNNER_TEMP/candidate-report/sha256.txt"
-          # Firmware was written by PAXX Docker build as root; runner cannot unlink it.
-          # Keep the report, but remove the unvalidated test binary using sudo.
+          # Keep an image for *supervised hardware acceptance*, not a public
+          # release. Its label is intentionally explicit about missing testing.
+          mkdir -p "$RUNNER_TEMP/firmware-qa-image"
+          sudo cp "$f" "$RUNNER_TEMP/firmware-qa-image/U1_extended-enhanced-HARDWARE-UNTESTED.bin"
+          sudo chown "$USER:$USER" "$RUNNER_TEMP/firmware-qa-image/U1_extended-enhanced-HARDWARE-UNTESTED.bin"
+          sha256sum "$RUNNER_TEMP/firmware-qa-image/"*.bin > "$RUNNER_TEMP/candidate-report/experimental-image.sha256"
           sudo rm -f -- "$f"
 
-      - name: Upload QA report only (never expose candidate .bin)
+      - name: Upload hardware-UNTESTED firmware image for supervised acceptance
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: paxx20-enhanced-build-QA-NOT-FLASHABLE
+          name: PAXX20-Enhanced-HARDWARE-UNTESTED-DO-NOT-PUBLISH
+          path: ${{ runner.temp }}/firmware-qa-image/*.bin
+          compression-level: 0
+          retention-days: 3
+          if-no-files-found: error
+
+      - name: Upload emulated QA reports
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: paxx20-enhanced-build-QA-NOT-RELEASED
           path: ${{ runner.temp }}/candidate-report/
           retention-days: 14
