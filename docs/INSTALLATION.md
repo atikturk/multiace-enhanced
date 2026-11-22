@@ -1,5 +1,7 @@
 # MultiACE Enhanced stable firmware — Snapmaker U1 installation
 
+**Publication status:** Stable candidate `v2.0.0-enhanced.1` passed physical acceptance but its complete `.bin` is **not yet public** pending proprietary Snapmaker component redistribution permission. These are installation instructions for the pending published image, not an active public download.
+
 **Version:** `v2.0.0-enhanced.1` • **Base:** PAXX v2.0.0-paxx12-24 / Snapmaker U1 2.0.0.205 • **multiACE:** Enhanced based on decay71 v1.27b • **Spoolman:** v0.27.1.
 
 This is an **independent community firmware** for **Snapmaker U1**, not an official release from Snapmaker, PAXX, decay71 or donkie. It does **not** target PAXX 2.1 or other Snapmaker printers.
