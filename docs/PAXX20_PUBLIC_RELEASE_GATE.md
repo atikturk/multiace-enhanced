@@ -5,7 +5,7 @@
 **Last updated:** 2026-11-22.  
 **Current candidate:** [GitHub Actions #49](https://github.com/atikturk/multiace-enhanced/actions/runs/45058047153), commit `9be7c886786a5c7249e1218beb90f3d0561351ea`.  
 **Candidate image SHA256:** `b3fb88cea6a4c9480ec23ad734886ab2cd029ece04f1efb53af62f880358280a`.  
-**Status:** **Not yet published**. The `#49` image passed CI and emulated QA but has not been flashed and tested as an integrated binary on a physical printer. Do not confuse earlier `#47` hardware testing plus in-place hotfixes with testing `#49` itself.
+**Status:** **Unpublished stable draft**. The actual #49 firmware has been installed on a Snapmaker U1 from a cleaned PAXX 1.6 baseline; the operator reports that everything is in place. This establishes initial on-device acceptance, but two cold boots, detailed post-install evidence and publication audit remain. See [2026-11-22 hardware acceptance record](VALIDATION_20261122_BUILD49.md).
 
 ## Goal and scope
 
@@ -24,6 +24,7 @@ The tracked firmware builder remains [`paxx20-candidate.yml`](../.github/workflo
 - [x] Unique RFID-to-Spoolman **display-only** matching on slots #34, #29, #35 and #36 verified on development hardware with `spoolman_auto=False`. Corresponding offline regression QA added in #49.
 - [x] TTC code values and Auto Replenish source snapshot hashes compared against the validated hardware files.
 - [x] A previous #47 image was physically installed; cold boot worked after in-place frontend fixes.
+- [x] Integrated #49 image installed from cleaned PAXX 1.6 on development Snapmaker U1; operator reported successful overall operation on 2026-11-22 (granular checks not yet documented).
 - [x] Upstream acknowledgements for PAXX, decay71 and donkie appear in README and CREDITS.md.
 
 ## Immediate acceptance: flash **the actual #49 binary** on the test U1
