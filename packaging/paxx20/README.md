@@ -1,6 +1,6 @@
 # PAXX 2.0 + MultiACE Enhanced + Spoolman — Combined Firmware
 
-**Status: integrated firmware built and field-tested. Public stable release:** [v2.0.0-enhanced.1](https://github.com/atikturk/multiace-enhanced/releases/tag/v2.0.0-enhanced.1).
+**Status: integrated firmware built and field-tested. Stable binary release is currently an unpublished draft**, pending verification of redistribution rights for proprietary Snapmaker components; see [third-party notices](../../docs/THIRD_PARTY_NOTICES.md).
 
 The previous prototype release checklist below records development milestones and unverified extra hardware scenarios. It should not be interpreted as evidence that the working integrated firmware lacks first-boot Spoolman/ACE support. The published binary comes from Actions #49, commit `9be7c886786a5c7249e1218beb90f3d0561351ea`, SHA256 `b3fb88cea6a4c9480ec23ad734886ab2cd029ece04f1efb53af62f880358280a`.
 
