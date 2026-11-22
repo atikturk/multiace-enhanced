@@ -6437,9 +6437,9 @@ async def _enhanced_dashboard_telemetry(data):
             "remaining_weight": round(total_g, 1),
         }
 
-    if not result.get("spoolman_auto"):
-        return result
-
+    # Preview is read-only: RFID matching for display must work even when
+    # spoolman_auto is disabled (no auto-adopt, push/pull, or consumption sync).
+    # Keep the existing explicit-binding/unique-match safeguards below.
     # This bridge is only for the currently unbound RFID setup.
     # Do not infer identities over existing explicit bindings.
     if result.get("spool_binding"):
