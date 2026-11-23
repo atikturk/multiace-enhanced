@@ -5,7 +5,7 @@
 
 A self-contained, community-built **USB-upgrade firmware** integrating PAXX Extended Firmware, MultiACE Enhanced Web, RFID/Spoolman and additional print/filament features. The same integration is tracked in this open-source repository.
 
-**Important:** Independent project. Not affiliated with or endorsed by Snapmaker, PAXX, decay71 or donkie. **Not tested for PAXX 2.1** or other Snapmaker models. Like any custom firmware, installation carries device and data risks; use the verified backup and rollback instructions.
+**Important — unofficial multiACE fork:** MultiACE Enhanced is **NOT an official multiACE firmware or release by decay71**. This independently maintained firmware has its own version, branding and issue tracker. **Please report Enhanced problems only to [atikturk/multiace-enhanced Issues](https://github.com/atikturk/multiace-enhanced/issues), not to decay71/multiACE.** Independent project; not affiliated with or endorsed by Snapmaker, PAXX, decay71 or donkie. **Not tested for PAXX 2.1** or other Snapmaker models. Like any custom firmware, installation carries device and data risks; use the verified backup and rollback instructions.
 
 ## Download and install
 
