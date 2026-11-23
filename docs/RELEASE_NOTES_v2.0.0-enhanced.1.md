@@ -2,6 +2,8 @@
 
 **Prepared stable firmware release for Snapmaker U1 — NOT YET PUBLIC.** Full binary distribution requires proprietary firmware redistribution clearance; see [licensing gate](THIRD_PARTY_NOTICES.md#proprietary-snapmaker-firmware-separate-redistribution-permission-required).
 
+**MultiACE Enhanced is NOT an official multiACE firmware and is not maintained or supported by decay71.** All bug reports, feature requests and end-user support for this independently released firmware belong at **[atikturk/multiace-enhanced Issues](https://github.com/atikturk/multiace-enhanced/issues)**, not in the upstream multiACE issue tracker.
+
 This is an independent community-built integration of PAXX Extended Firmware, decay71 multiACE and Donkie Spoolman. It is **not** an official Snapmaker, PAXX, decay71 or donkie release.
 
 ## Download
