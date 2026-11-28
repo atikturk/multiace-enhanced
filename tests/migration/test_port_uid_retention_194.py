@@ -43,7 +43,7 @@ class PortTests(unittest.TestCase):
         return inst
 
     def test_hex_card_code_survives_unbind(self):
-        obj = self.new('SM27,04F99239C32A81')
+        obj = self.new('SM27,04ABCDEF123456')
         self.assertFalse(obj._spool_drop_if_unbound_sm('83', 'removed'))
         self.assertIn('83', obj._spools)
 
@@ -53,11 +53,11 @@ class PortTests(unittest.TestCase):
         self.assertNotIn('83', obj._spools)
 
     def test_force_clears_even_known_card(self):
-        obj = self.new('SM27,04F99239C32A81')
+        obj = self.new('SM27,04ABCDEF123456')
         self.assertTrue(obj._spool_drop_if_unbound_sm('83', 'switch', force=True))
 
     def test_bound_spool_never_dropped(self):
-        obj = self.new('SM27,04F99239C32A81', bindings={'0_0': '83'})
+        obj = self.new('SM27,04ABCDEF123456', bindings={'0_0': '83'})
         self.assertFalse(obj._spool_drop_if_unbound_sm('83', 'remove'))
 
     def test_unsynced_consumption_held(self):
