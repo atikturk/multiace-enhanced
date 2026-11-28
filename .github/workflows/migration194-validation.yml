@@ -1,0 +1,51 @@
+name: Validate PAXX 2.1.2 / multiACE 1.94 migration (NO FIRMWARE)
+on:
+  push:
+    branches:
+      - migration/paxx212-multiace194
+    paths:
+      - 'scripts/migration/**'
+      - 'tests/migration/**'
+      - '.github/workflows/migration194-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-migration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Enhanced migration branch
+        uses: actions/checkout@v4
+
+      - name: Checkout tagged multiACE upstream (read-only)
+        uses: actions/checkout@v4
+        with:
+          repository: decay71/multiACE
+          ref: v1.94
+          path: upstream-v194
+
+      - name: Run isolated TTC and RFID port tests
+        run: python3 -m unittest discover -s tests/migration -p 'test_*.py' -v
+
+      - name: Apply guarded UID-retention patch to a SEPARATE candidate file
+        run: |
+          python3 scripts/migration/port_uid_retention_multiace194.py \
+            --source upstream-v194/multiace/klipper/extras/ace_spool.py \
+            --output artifacts/candidate-ace_spool.py
+          python3 -m py_compile artifacts/candidate-ace_spool.py
+
+      - name: Ensure patch landed once and the vendor source remains untouched
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          source = Path('upstream-v194/multiace/klipper/extras/ace_spool.py').read_text()
+          patched = Path('artifacts/candidate-ace_spool.py').read_text()
+          marker = 'ENHANCED_194_REMEMBERED_CARD_UID_RETENTION'
+          assert marker not in source
+          assert patched.count(marker) == 1
+          assert '_spool_bind_tag_codes' in patched
+          assert '_v1_tag_bind_from_status' in patched
+          print('Real upstream 1.94 source port: PASS (not a firmware build)')
+          PY
