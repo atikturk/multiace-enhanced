@@ -53,6 +53,22 @@ jobs:
           print('Web V2 1.94 approved-only backend port: PASS (no UI/firmware build)')
           PY
 
+      - name: Prepare 1.94 Vue card template candidate
+        run: |
+          python3 scripts/migration/port_spoolman_frontend_194.py \
+            --source upstream-v194/multiace/web/frontend/index.html \
+            --output artifacts/frontend/index.html
+          python3 - <<'PY'
+          from pathlib import Path
+          before = Path('upstream-v194/multiace/web/frontend/index.html').read_text()
+          after = Path('artifacts/frontend/index.html').read_text()
+          marker = 'ENHANCED_194_BOUND_SPOOL_SECOND_LINE_V2'
+          assert marker not in before
+          assert after.count(marker) == 2
+          assert 'slot.spoolman.match_source' in after
+          print('Vue Web V2 approved-only second line: PASS (no firmware build)')
+          PY
+
       - name: Ensure patch landed once and the vendor source remains untouched
         run: |
           python3 - <<'PY'
