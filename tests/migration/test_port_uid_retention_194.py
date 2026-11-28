@@ -68,6 +68,13 @@ class PortTests(unittest.TestCase):
         once = port.patch(SAMPLE)
         self.assertEqual(once, port.patch(once))
 
+    def test_unrelated_drop_site_is_not_patched(self):
+        source = SAMPLE + '\nclass Other:\n    def drop(self, sid):\n        self._spools.pop(sid, None)\n'
+        patched = port.patch(source)
+        self.assertEqual(patched.count(port.MARK), 1)
+        self.assertIn('class Other:', patched)
+        self.assertIn('    def drop(self, sid):\n        self._spools.pop(sid, None)', patched)
+
     def test_unrecognized_upstream_refused(self):
         with self.assertRaisesRegex(ValueError, 'upstream spool function'):
             port.patch(SAMPLE.replace('self._spools.pop(sid, None)', 'self._spools.clear()'))
