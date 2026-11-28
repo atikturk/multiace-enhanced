@@ -36,6 +36,23 @@ jobs:
             --output artifacts/candidate-ace_spool.py
           python3 -m py_compile artifacts/candidate-ace_spool.py
 
+      - name: Prepare 1.94 web card backend candidate (read-only)
+        run: |
+          python3 scripts/migration/port_spoolman_cards_194.py \
+            --source upstream-v194/multiace/web/backend/main.py \
+            --output artifacts/backend/main.py
+          cp migration/overlays/web/backend/enhanced_spool_preview.py artifacts/backend/
+          python3 -m py_compile artifacts/backend/main.py artifacts/backend/enhanced_spool_preview.py
+          python3 - <<'PY'
+          from pathlib import Path
+          src = Path('upstream-v194/multiace/web/backend/main.py').read_text()
+          dst = Path('artifacts/backend/main.py').read_text()
+          assert 'ENHANCED_194_APPROVED_SPOOL_CARDS_V2' not in src
+          assert dst.count('ENHANCED_194_APPROVED_SPOOL_CARDS_V2') == 1
+          assert 'return await _enhanced_spool_cards(parsed, _spoolman_collection)' in dst
+          print('Web V2 1.94 approved-only backend port: PASS (no UI/firmware build)')
+          PY
+
       - name: Ensure patch landed once and the vendor source remains untouched
         run: |
           python3 - <<'PY'
