@@ -31,10 +31,10 @@ Do **not** overwrite new 1.94 modules with the old, monolithic 1.27b `ace.py`. I
 ## Physical reference state (last confirmed)
 
 - Current U1 runs PAXX 2.0 + multiACE Enhanced 1.27b with RFID V1.6 and Spoolman Web V2.
-- ACE1 slot1 → local #83 / Spoolman #27: `SM27,04F99239C32A81`
-- ACE1 slot2 → local #84 / Spoolman #10: `SM10,1D69BF97191080`
-- ACE1 slot3 → local #85 / Spoolman #21: `SM21,1D099097191080`
-- ACE1 slot4 → local #86 / Spoolman #22: `SM22,0449F138C32A81`
+- ACE1 slot1 → local #83 / Spoolman #27: `SM27,04ABCDEF123456`
+- ACE1 slot2 → local #84 / Spoolman #10: `SM10,1D123456789ABC`
+- ACE1 slot3 → local #85 / Spoolman #21: `SM21,1DABCDEF123456`
+- ACE1 slot4 → local #86 / Spoolman #22: `SM22,04FEDCBA654321`
 - 4/4 mappings survived `RESTART`; real print-based Spoolman consumption **has not been verified**.
 - Unregistered RFID rolls must not be silently adopted into Spoolman, and their unregistered second line must stay empty.
 
@@ -63,3 +63,11 @@ Do **not** overwrite new 1.94 modules with the old, monolithic 1.27b `ace.py`. I
 - [ ] First on-device validation when idle, then cold boot, then controlled real-print consumption.
 
 **Status language:** “branch created” does **not** mean any 1.94 Enhanced port has passed build or printer tests. Keep this branch clearly labeled non-installable until all gates pass.
+
+## 28 November — audit of V3.2 backup (do not confuse snapshots)
+
+- The uploaded `MultiACE_Enhanced_v1.27b_20261127_200924_FULL_RECOVERY.tar.gz` passes its internal SHA256 manifest (**6,721 regular files**, no missing/extra/mismatched entries). SQLite consistency check passes; `multiace_spools.json` preserves **4/4 slot bindings** and **35 total spool rows** are present in the SQLite database.
+- **IMPORTANT:** archived `klipper/extras/ace.py` SHA256 is `b5060e1c1f0fb58e8078b108addf96738e26ec34979b066249ef333a2ad24caa`, not the separately verified V1.6 installer source SHA256 `dced42785d3d752e20a64ca0111ab0f9e6748bec426f3b8406e78b2b35f96512`. Thus do not assume the archive's Klipper source includes all V1.6 changes; verify the live printer before replacing anything.
+- Archived web backend SHA256 is `93d7a5e4263f7a0e1c3403f6cc7d0e93a7b899db5eb211adc47fbae2314c2abe`, and does **not** contain Spoolman manager routes or marker `ENHANCED_SPOOLMAN_BOUND_CARD_PREVIEW_V2`. Reconstruct the reference from the separately retained Inventory V1 and Web V2 patch source, **not** from this snapshot alone.
+- The actual backup and live database are **private** and should never be committed to this public repository. Use synthetic RFID codes in public tests.
+- Migration source patch created: `scripts/migration/port_uid_retention_multiace194.py`, tests in `tests/migration/test_port_uid_retention_194.py`; locally 12/12 migration tests passed. Tagged upstream 1.94 integration CI was configured but must be checked separately.
