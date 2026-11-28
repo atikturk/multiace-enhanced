@@ -78,3 +78,11 @@ Do **not** overwrite new 1.94 modules with the old, monolithic 1.27b `ace.py`. I
 - Five simulated-real-source acceptance checks: four distinct known RFID SKU codes bind; previous four bindings survive the first V1 status frame; unknown tag does not create a local row; different tag unbinds stale binding; duplicated code is refused.
 - The guarded Enhanced UID-retention port applied only to `SpoolMixin._spool_drop_if_unbound_sm` and `py_compile` passed. Earlier CI found two additional unrelated `_spools.pop` sites and was intentionally aborted by the first safety guard; this was corrected without modifying upstream code.
 - **Pending:** test the patched module's behavior under real spool removal and persistence, port Web V2 and other Enhanced features, build and inspect firmware, and hardware smoke tests. Never treat this test as an installation green light.
+
+## 28 November — Web V2 approved-card port PASS
+
+- [CI run 46144496527](https://github.com/atikturk/multiace-enhanced/actions/runs/46144496527) passed **32/32** tests.
+- Added `migration/overlays/web/backend/enhanced_spool_preview.py`: read-only 1.94 card enrichment using an **approved live binding only**; no vendor/colour guesses, no automatic adoption, no DB mutation, and unknown RFID leaves the second line empty.
+- Added guarded `scripts/migration/port_spoolman_cards_194.py` to adapt upstream 1.94 `/api/state` to use its **existing** Spoolman collection cache instead of duplicating network/consumption paths.
+- Added guarded `scripts/migration/port_spoolman_frontend_194.py` to present a second line in both classic slot cards and the panel's card template. Backend and Vue candidates compile/pass source anchor validation on actual upstream tag `v1.94`.
+- This is **not a full Web V2 deployment yet**: original separate Inventory V1 page and write operations (bind/unbind/weight/edit/create/archive) are still pending port and integration tests. Do not install this migration branch on the printer.
