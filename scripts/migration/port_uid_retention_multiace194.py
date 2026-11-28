@@ -47,11 +47,18 @@ def patch(source: str) -> str:
         raise ValueError('partial or duplicate Enhanced UID patch detected')
     if source.count('class SpoolMixin:') != 1:
         raise ValueError('expected exactly one multiACE 1.94 SpoolMixin class')
-    if source.count(FUNC) != 1 or source.count(POP) != 1:
+    if source.count(FUNC) != 1:
         raise ValueError('upstream spool function or drop site changed; review manually')
     pos = source.index(FUNC)
-    source = source[:pos] + HELPER + source[pos:]
-    source = source.replace(POP, GUARD + POP, 1)
+    end = source.find('\n    def ', pos + len(FUNC))
+    if end < 0:
+        end = len(source)
+    body = source[pos:end]
+    # Upstream 1.94 has OTHER self._spools.pop() calls in unrelated commands.
+    # Restrict the edit to the exact function instead of touching those.
+    if body.count(POP) != 1:
+        raise ValueError('upstream spool function or drop site changed; review manually')
+    source = source[:pos] + HELPER + body.replace(POP, GUARD + POP, 1) + source[end:]
     compile(source, '<enhanced_194_ace_spool.py>', 'exec')
     return source
 
